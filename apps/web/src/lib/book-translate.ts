@@ -415,7 +415,7 @@ export async function mergeTranslatedVolumes(opts: {
   volumesTotal?: number;
   /** Sessões de volume já carregadas (evita reler a estante). */
   getVolumeSession?: (volumeIdx: number) => Promise<Session | null>;
-}): Promise<{ ok: boolean; error?: string; book?: ParsedBook }> {
+}): Promise<{ ok: boolean; error?: string }> {
   const { book, userId } = opts;
   const fp = bookFingerprint(book);
   const lang = getTargetLang();
@@ -470,5 +470,5 @@ export async function mergeTranslatedVolumes(opts: {
   const epubBytes = await volumeToEpub(merged, `urn:moka:${fp}-${lang}-full`);
   downloadBytes(fileName, epubBytes, "application/epub+zip");
   await saveVolumeToLibrary(book, merged, fileName, epubBytes.length, "full", userId);
-  return { ok: true, book: merged };
+  return { ok: true };
 }

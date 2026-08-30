@@ -14,11 +14,7 @@ import {
   type TranslationPlan,
 } from "@/lib/book-translate";
 import { getEntryForText } from "@/lib/config";
-import { computeCostUsd, getCurrency, convertFromUsd, fmtMoney, USAGE_EVENT, type UsageEventDetail } from "@/lib/telemetry";
-import { blocksToText } from "@/lib/paginate";
-import { bookFingerprint } from "@/lib/book-translate";
-import { getBookById } from "@/lib/db";
-import { getActiveMemoriaId, putMemoriaObject } from "@/lib/memoria/store";
+import { computeCostUsd, getCurrency, convertFromUsd, fmtMoney } from "@/lib/telemetry";
 
 interface TranslateBookModalProps {
   book: ParsedBook;
@@ -60,74 +56,6 @@ export function TranslateBookModal({ book, userId, onClose }: TranslateBookModal
   const [secs, setSecs] = useState(0);
   const cancelledRef = useRef(false);
   const [pausedByHide, setPausedByHide] = useState(false);
-
-  // ── OBRA MOKA · checkpoint 2 (DSC-018/019, 30/08) ──
-  // 🧾 RECIBO REAL: acumula o usage REAL de cada chamada (evento da
-  // telemetria) durante o job — é o custo de verdade, não a estimativa.
-  const usageRef = useRef({ tokens: 0, usd: 0 });
-  const [receipt, setReceipt] = useState<{ tokens: number; usd: number } | null>(null);
-  // 🤔 CONFIRMAÇÃO FORTE: estimativa já está na tela; o 1º clique arma o
-  // "tem certeza?" — só o 2º dispara (regra do Miguel p/ tarefa grande).
-  const [armed, setArmed] = useState(false);
-  // 🧠 AUTO-MEMÓRIA: resultado entra sozinho na memória (avisa, não pergunta).
-  const [inMemory, setInMemory] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (phase !== "running" && phase !== "merging") return;
-    const onUsage = (e: Event) => {
-      const d = (e as CustomEvent<UsageEventDetail>).detail;
-      if (d && d.status === "ok" && d.task.startsWith("livro")) {
-        usageRef.current.tokens += d.totalTokens;
-        usageRef.current.usd += d.costUsd;
-      }
-    };
-    window.addEventListener(USAGE_EVENT, onUsage);
-    return () => window.removeEventListener(USAGE_EVENT, onUsage);
-  }, [phase]);
-
-  /** Joga um livro traduzido na memória como objeto pesquisável. */
-  const saveToMemoria = async (b: ParsedBook, label: string) => {
-    try {
-      const body = (b.chapters ?? [])
-        .map((ch) => `## ${ch.title}\n\n${blocksToText(ch.blocks, "\n\n")}`)
-        .join("\n\n")
-        .trim();
-      if (body.length < 200) return; // anti-poluição: nada de quase-vazio
-      const cost = usageRef.current.usd || undefined;
-      await putMemoriaObject({
-        memoriaId: getActiveMemoriaId(),
-        type: "traducao",
-        title: b.title,
-        author: b.author,
-        lang: b.language,
-        source: label,
-        tags: ["traducao", "livro"],
-        summary: body.slice(0, 300),
-        body,
-        chars: body.length,
-        costUsd: cost,
-      });
-      setInMemory(b.title);
-    } catch {
-      /* memória é bônus — nunca derruba a tradução */
-    }
-  };
-
-  // Livro de volume ÚNICO: ao concluir, o volume já é o livro inteiro —
-  // lê da estante (id determinístico) e joga na memória automaticamente.
-  useEffect(() => {
-    if (phase !== "done" || plan.volumesTotal !== 1 || inMemory) return;
-    let alive = true;
-    void (async () => {
-      try {
-        const fp = bookFingerprint(book);
-        const s = await getBookById(`tr-${fp}-${plan.targetLang}-v1`);
-        if (alive && s?.book) await saveToMemoria(s.book, "tradução integral do Moka (volume único)");
-      } catch { /* best-effort */ }
-    })();
-    return () => { alive = false; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase]);
 
   // 🧮 ESTIMATIVA prévia (Miguel, 25/08: "trava de segurança maior pra
   // traduzir o livro inteiro — antes, exigência de estimativa de custo em
@@ -217,10 +145,6 @@ export function TranslateBookModal({ book, userId, onClose }: TranslateBookModal
     cancelledRef.current = false;
     setPausedByHide(false);
     setError(null);
-    setArmed(false);
-    setReceipt(null);
-    setInMemory(null);
-    usageRef.current = { tokens: 0, usd: 0 };
     setPhase("running");
     try {
       const result = await runTranslationJob({
@@ -233,7 +157,6 @@ export function TranslateBookModal({ book, userId, onClose }: TranslateBookModal
       if (result.cancelled) {
         setPhase("cancelled");
       } else if (result.ok) {
-        setReceipt({ ...usageRef.current });
         setPhase("done");
       }
     } catch (err) {
@@ -252,12 +175,8 @@ export function TranslateBookModal({ book, userId, onClose }: TranslateBookModal
     setPhase("merging");
     try {
       const r = await mergeTranslatedVolumes({ book, userId, volumesTotal: plan.volumesTotal });
-      if (r.ok) {
-        // 🧠 OBRA MOKA (DSC-019): o livro completo entra AUTOMATICAMENTE
-        // na memória — a IA da pessoa passa a conhecer a tradução dela.
-        if (r.book) await saveToMemoria(r.book, "tradução integral do Moka (livro completo)");
-        setPhase("merged");
-      } else {
+      if (r.ok) setPhase("merged");
+      else {
         setError(r.error ?? "Erro.");
         setPhase("error");
       }
@@ -335,28 +254,11 @@ export function TranslateBookModal({ book, userId, onClose }: TranslateBookModal
                 </div>
               )}
 
-              {(!savedJob || savedJob.completedVolumes >= plan.volumesTotal) &&
-                (armed ? (
-                  <div className="tb-resume-box">
-                    <p>🤔 {t("tb_sure", {
-                      cost: est
-                        ? est.usd >= 0.01
-                          ? `US$ ${est.usd.toFixed(2)}`
-                          : `US$ ${est.usd.toFixed(4)}`
-                        : "…",
-                    })}</p>
-                    <button className="tb-btn tb-btn-primary" onClick={() => start(false)}>
-                      ✅ {t("tb_sure_yes")}
-                    </button>
-                    <button className="tb-btn tb-btn-ghost" onClick={() => setArmed(false)}>
-                      {t("tb_sure_no")}
-                    </button>
-                  </div>
-                ) : (
-                  <button className="tb-btn tb-btn-primary" onClick={() => setArmed(true)}>
-                    🌍 {t("tb_start")}
-                  </button>
-                ))}
+              {(!savedJob || savedJob.completedVolumes >= plan.volumesTotal) && (
+                <button className="tb-btn tb-btn-primary" onClick={() => start(false)}>
+                  🌍 {t("tb_start")}
+                </button>
+              )}
             </>
           )}
 
@@ -414,15 +316,6 @@ export function TranslateBookModal({ book, userId, onClose }: TranslateBookModal
           {phase === "done" && (
             <>
               <p className="tb-done">✅ {t("tb_done", { n: plan.volumesTotal })}</p>
-              {receipt && (
-                <p className="tb-done">
-                  🧾 {t("tb_receipt_real", {
-                    tokens: receipt.tokens.toLocaleString(),
-                    cost: fmtMoney(convertFromUsd(receipt.usd, getCurrency()), getCurrency()),
-                  })}
-                </p>
-              )}
-              {inMemory && <p className="tb-done">🧠 {t("tb_in_memory")}</p>}
               {plan.volumesTotal > 1 && (
                 <button className="tb-btn tb-btn-primary" onClick={merge}>
                   📕 {t("tb_merge")}
@@ -450,15 +343,6 @@ export function TranslateBookModal({ book, userId, onClose }: TranslateBookModal
           {phase === "merged" && (
             <>
               <p className="tb-done">📕 {t("tb_merged")}</p>
-              {receipt && (
-                <p className="tb-done">
-                  🧾 {t("tb_receipt_real", {
-                    tokens: receipt.tokens.toLocaleString(),
-                    cost: fmtMoney(convertFromUsd(receipt.usd, getCurrency()), getCurrency()),
-                  })}
-                </p>
-              )}
-              {inMemory && <p className="tb-done">🧠 {t("tb_in_memory")}</p>}
               <button className="tb-btn tb-btn-ghost" onClick={onClose}>
                 {t("close")}
               </button>
