@@ -457,6 +457,9 @@ export function Reader({
   const [bookmarksOpen, setBookmarksOpen] = useState(false);
   // Hub 📊 (Suas IAs + Mural) — 1 ícone, 2 submenus (Miguel, 25/08).
   const [statsHubOpen, setStatsHubOpen] = useState(false);
+  // Reforma 31/08 (ordem do Miguel): 3 BOTÕES GRANDES com submenu
+  // (📖 Página · 📌 Marcar · 🎤 Perguntar) + menu "⋯" único à direita.
+  const [bigMenu, setBigMenu] = useState<"page" | "mark" | "more" | null>(null);
   // LLM/modelo em uso (recado de espera — Miguel, 25/08: 'tem que dizer
   // você está usando a LLM X, modelo Y') + progresso estimado em %.
   const [textEntry, setTextEntry] = useState<{ providerName?: string; providerId: string; model?: string } | null>(null);
@@ -1811,8 +1814,8 @@ export function Reader({
           <a
             href="/"
             className="cafezinho-mark"
-            title="Moka — Ir para página central"
-            aria-label="Moka — Ir para página central"
+            title={t("reader_home_title")}
+            aria-label={t("reader_home_title")}
           >
             <CafezinhoLogo size={26} opacity={0.85} />
           </a>
@@ -1834,165 +1837,6 @@ export function Reader({
           >
             📚
           </button>
-          {/* 📓 Notas */}
-          <button
-            onClick={() => setNotesOpen(true)}
-            className="icon-btn"
-            title={t("reader_notes")}
-            aria-label={t("reader_notes")}
-          >
-            📓 {notes.length > 0 && <span className="badge">{notes.length}</span>}
-          </button>
-          {/* 🏷 Marcar página */}
-          <button
-            onClick={toggleBookmark}
-            className={`icon-btn ${isBookmarked ? "active" : ""}`}
-            title={isBookmarked ? t("reader_bookmark_remove") : t("reader_bookmark")}
-            aria-label={t("reader_bookmark")}
-            aria-pressed={isBookmarked}
-          >
-            {isBookmarked ? "🔖" : "🏷"}
-          </button>
-          {/* 📸 Foto (com confirmação antes de baixar) */}
-          <button
-            onClick={() => {
-              if (confirm(t("reader_confirm_photo", { page: pageLabel }))) {
-                savePageAsImage();
-              }
-            }}
-            className="icon-btn"
-            title={t("reader_photo")}
-            aria-label={t("reader_photo")}
-          >
-            📸
-          </button>
-          {/* 🔊 Ler em voz alta (TTS) — neural (IA) ou nativa */}
-          <button
-            onClick={() => {
-              // Se já tá tocando/pausado, controla pause/resume direto.
-              if (tts.state === "paused") { tts.resume(); return; }
-              if (tts.state === "playing") { tts.pause(); return; }
-              // Se tá parado, pede confirmação antes de gerar áudio.
-              if (confirm(t("reader_confirm_audio"))) {
-                readPageAloud();
-              }
-            }}
-            className={`icon-btn ${tts.state !== "idle" || ttsLoading ? "active" : ""}`}
-            title={
-              ttsLoading ? t("reader_preparing_audio")
-              : tts.state === "playing" ? t("reader_pause")
-              : tts.state === "paused" ? t("reader_resume")
-              : t("reader_read_aloud")
-            }
-            aria-label={t("reader_read_aloud")}
-            disabled={!tts.supported}
-          >
-            {ttsLoading ? "⏳" : tts.state === "playing" ? "⏸" : tts.state === "paused" ? "▶️" : "🔊"}
-          </button>
-          {/* 🎤✒️ Perguntar qualquer coisa — abre a janelinha de pergunta
-              (por voz OU escrevendo) sobre o livro. Funciona até em fullscreen. */}
-          <button
-            onClick={() => setAskOpen(true)}
-            className="icon-btn"
-            title={t("reader_ask_anything")}
-            aria-label={t("reader_ask_anything")}
-          >
-            <svg
-              width="21"
-              height="21"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden
-            >
-              {/* microfone */}
-              <rect x="6" y="2" width="6" height="10.5" rx="3" />
-              <path d="M3.5 10.5a5.5 5.5 0 0 0 9.4 3.9" />
-              {/* caneta (canto inferior direito) */}
-              <path
-                d="M14.2 20.4l4.9-4.9a1.56 1.56 0 0 1 2.2 2.2l-4.9 4.9-2.9.7z"
-                fill="currentColor"
-                stroke="none"
-              />
-            </svg>
-          </button>
-          {/* 📝 ANOTAR — Resumir ou Explicar a página inteira, com barra
-              deslizante de tamanho (pedido do Miguel, 2026-08-01: antes eram
-              dois ícones 📝+🧠 — redundância cortada). Resumo cobre também
-              o livro inteiro. */}
-          <button
-            onClick={() => setSummaryOpen(true)}
-            className="icon-btn"
-            title={t("pa_title")}
-            aria-label={t("pa_title")}
-          >
-            📝
-          </button>
-          {/* 🌐 Traduzir a PÁGINA NA TELA (só ícone + confirmação).
-              SEMPRE renderizado: antes só aparecia com (isEpub||pdfSource)
-              e SUMIA em PDF enquanto o arquivo carregava — pedaço do bug
-              crônico do menu. Sem texto ainda, fica só desabilitado.
-              PDF: texto extraído da página renderizada.
-              EPUB: texto da página local visível (nunca o livro inteiro). */}
-          <button
-            onClick={() => {
-              if (overlayMode === "translate" && showTranslation) {
-                setShowTranslation(false);
-                return;
-              }
-              // Sem texto na página (scan/imagem ou PDF ainda carregando):
-              // AVISA em vez de ficar mudo — pedido do Miguel, 23/08 ("clico
-              // e não diz nada"). Antes o botão ficava disabled e o clique
-              // não fazia NADA (nem a caixa de confirmação aparecia).
-              if (!currentPageText) {
-                // Página de IMAGEM (PDF escaneado, sem texto): oferece a
-                // tradução por IA de VISÃO — avisando que é imagem, que
-                // custa um pouco mais e QUANTO deve custar (estimativa),
-                // antes de qualquer chamada (pedido do Miguel, 23/08).
-                if (capturePageImage()) {
-                  (async () => {
-                    const est = await estimateImagePageCostUsd();
-                    const costTxt = est > 0
-                      ? est < 0.01
-                        ? `US$ ${est.toFixed(4)}`
-                        : `US$ ${est.toFixed(2)}`
-                      : t("reader_vision_cost_unknown");
-                    if (confirm(t("reader_vision_confirm", { cost: costTxt }))) {
-                      handlePageAction("translate-image");
-                    }
-                  })();
-                  return;
-                }
-                alert(t("reader_scan_no_text"));
-                return;
-              }
-              if (confirm(t("reader_confirm_translate_page"))) {
-                handleTranslatePage();
-              }
-            }}
-            disabled={translatingPage}
-            className={`icon-btn ${overlayMode === "translate" && showTranslation ? "active" : ""}`}
-            title={translateBtnLabel}
-            aria-label={translateBtnLabel}
-          >
-            {translatingPage && overlayMode === "translate" ? "⏳" : "🌐"}
-          </button>
-          {/* 🌍 Traduzir o LIVRO INTEIRO em volumes de ~50 páginas.
-              Cada volume vira um EPUB (baixado) + livro na estante;
-              depois dá pra integrar tudo num livro único. Só EPUB. */}
-          {isEpub && (
-            <button
-              onClick={() => setTransBookOpen(true)}
-              className="icon-btn"
-              title={t("tb_icon")}
-              aria-label={t("tb_icon")}
-            >
-              🌍
-            </button>
-          )}
           {/* ⏹ Stop áudio (só aparece quando tem áudio rolando) */}
           {(tts.state !== "idle" || ttsLoading) && (
             <button
@@ -2004,69 +1848,240 @@ export function Reader({
               ⏹
             </button>
           )}
+
+        </div>
+        {/* ══ REFORMA 31/08 (ordem do Miguel): 3 BOTÕES GRANDES com
+            submenu — "página inteira ler/explicar num só; marcar/foto num
+            só; microfone pra perguntar" — bem visíveis, abrem submenu. ══ */}
+        <div className="reader-big-group">
+          {/* ── 📖 PÁGINA — ler em voz alta, resumir/explicar, traduzir ── */}
+          <div className="reader-big-wrap">
+            <button
+              type="button"
+              className={`reader-big-btn ${bigMenu === "page" ? "open" : ""}`}
+              onClick={() => setBigMenu((v) => (v === "page" ? null : "page"))}
+              aria-expanded={bigMenu === "page"}
+              aria-haspopup="menu"
+            >
+              <span className="reader-big-ico" aria-hidden>📖</span>
+              <span className="reader-big-label">{t("reader_big_page")}</span>
+              <span className="reader-big-caret" aria-hidden>▾</span>
+            </button>
+            {bigMenu === "page" && (
+              <>
+                <div className="big-menu-backdrop" onClick={() => setBigMenu(null)} />
+                <div className="reader-big-menu" role="menu">
+                  {/* 🔊 Ler em voz alta (TTS) — neural (IA) ou nativa */}
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="reader-big-item"
+                    onClick={() => {
+                      setBigMenu(null);
+                      if (tts.state === "paused") { tts.resume(); return; }
+                      if (tts.state === "playing") { tts.pause(); return; }
+                      if (confirm(t("reader_confirm_audio"))) readPageAloud();
+                    }}
+                    disabled={!tts.supported}
+                  >
+                    <span aria-hidden>{ttsLoading ? "⏳" : tts.state === "playing" ? "⏸" : tts.state === "paused" ? "▶️" : "🔊"}</span>
+                    <span>
+                      {ttsLoading ? t("reader_preparing_audio")
+                      : tts.state === "playing" ? t("reader_pause")
+                      : tts.state === "paused" ? t("reader_resume")
+                      : t("reader_read_aloud")}
+                    </span>
+                  </button>
+                  {/* 📝 Resumir / Explicar a página (com barra de tamanho) */}
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="reader-big-item"
+                    onClick={() => { setBigMenu(null); setSummaryOpen(true); }}
+                  >
+                    <span aria-hidden>📝</span> <span>{t("pa_title")}</span>
+                  </button>
+                  {/* 🌐 Traduzir a página na tela */}
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="reader-big-item"
+                    onClick={() => {
+                      setBigMenu(null);
+                      if (overlayMode === "translate" && showTranslation) {
+                        setShowTranslation(false);
+                        return;
+                      }
+                      if (!currentPageText) {
+                        if (capturePageImage()) {
+                          (async () => {
+                            const est = await estimateImagePageCostUsd();
+                            const costTxt = est > 0
+                              ? est < 0.01 ? `US$ ${est.toFixed(4)}` : `US$ ${est.toFixed(2)}`
+                              : t("reader_vision_cost_unknown");
+                            if (confirm(t("reader_vision_confirm", { cost: costTxt }))) {
+                              handlePageAction("translate-image");
+                            }
+                          })();
+                          return;
+                        }
+                        alert(t("reader_scan_no_text"));
+                        return;
+                      }
+                      if (confirm(t("reader_confirm_translate_page"))) {
+                        handleTranslatePage();
+                      }
+                    }}
+                    disabled={translatingPage}
+                  >
+                    <span aria-hidden>{translatingPage && overlayMode === "translate" ? "⏳" : "🌐"}</span>
+                    <span>{t("reader_menu_translate_page")}</span>
+                  </button>
+                  {/* 🌍 Traduzir o LIVRO INTEIRO em volumes (só EPUB) */}
+                  {isEpub && (
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className="reader-big-item"
+                      onClick={() => { setBigMenu(null); setTransBookOpen(true); }}
+                    >
+                      <span aria-hidden>🌍</span> <span>{t("tb_icon")}</span>
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* ── 📌 MARCAR — marcar página, foto, notas ── */}
+          <div className="reader-big-wrap">
+            <button
+              type="button"
+              className={`reader-big-btn ${bigMenu === "mark" ? "open" : ""}`}
+              onClick={() => setBigMenu((v) => (v === "mark" ? null : "mark"))}
+              aria-expanded={bigMenu === "mark"}
+              aria-haspopup="menu"
+            >
+              <span className="reader-big-ico" aria-hidden>📌</span>
+              <span className="reader-big-label">{t("reader_big_mark")}</span>
+              <span className="reader-big-caret" aria-hidden>▾</span>
+            </button>
+            {bigMenu === "mark" && (
+              <>
+                <div className="big-menu-backdrop" onClick={() => setBigMenu(null)} />
+                <div className="reader-big-menu" role="menu">
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className={`reader-big-item ${isBookmarked ? "active" : ""}`}
+                    onClick={() => { setBigMenu(null); toggleBookmark(); }}
+                    aria-pressed={isBookmarked}
+                  >
+                    <span aria-hidden>{isBookmarked ? "🔖" : "🏷"}</span>
+                    <span>{isBookmarked ? t("reader_bookmark_remove") : t("reader_bookmark")}</span>
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="reader-big-item"
+                    onClick={() => {
+                      setBigMenu(null);
+                      if (confirm(t("reader_confirm_photo", { page: pageLabel }))) {
+                        savePageAsImage();
+                      }
+                    }}
+                  >
+                    <span aria-hidden>📸</span> <span>{t("reader_photo")}</span>
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="reader-big-item"
+                    onClick={() => { setBigMenu(null); setNotesOpen(true); }}
+                  >
+                    <span aria-hidden>📓</span>
+                    <span>{t("reader_notes")}{notes.length > 0 ? ` (${notes.length})` : ""}</span>
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* ── 🎤 PERGUNTAR — qualquer coisa sobre a página/livro ── */}
+          <button
+            type="button"
+            className="reader-big-btn"
+            onClick={() => setAskOpen(true)}
+            title={t("reader_ask_anything")}
+            aria-label={t("reader_ask_anything")}
+          >
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+            >
+              <rect x="6" y="2" width="6" height="10.5" rx="3" />
+              <path d="M3.5 10.5a5.5 5.5 0 0 0 9.4 3.9" />
+              <path d="M14.2 20.4l4.9-4.9a1.56 1.56 0 0 1 2.2 2.2l-4.9 4.9-2.9.7z" fill="currentColor" stroke="none" />
+            </svg>
+            <span className="reader-big-label">{t("reader_big_ask")}</span>
+          </button>
         </div>
         {/* Fim reader-row-scroll. Início reader-row-right (controles fixos). */}
           <div className="reader-row-right">
             <LangSwitcher />
-            {/* ❓ Ajuda */}
-            <a
-              href="/ajuda"
-              target="_blank"
-              rel="noreferrer"
-              className="icon-btn"
-              title={t("help_title")}
-              aria-label={t("help_title")}
-              style={{ textDecoration: "none", color: "var(--text)" }}
-            >
-              ❓
-            </a>
-            {/* 📊 Hub de dados (Miguel, 25/08): 1 ícone com 2 submenus —
-                Suas IAs (telemetria) e Mural das IAs. Com ⛶/👁 mudados pra
-                chave de zoom, o menu volta a caber numa linha. */}
-            <div className="stats-hub">
+            {/* 👤 Login (AuthGate: Google OU e-mail) */}
+            {auth && <AuthGate />}
+            {/* ══ Reforma 31/08 (ordem do Miguel): "esse menu da direita —
+                ajuda, suas IAs/telemetria, mural e configurações TUDO NUM
+                SÓ". A bandeirinha de idioma fica de fora, solta. ══ */}
+            <div className="reader-big-wrap">
               <button
                 type="button"
-                className="icon-btn"
-                onClick={() => setStatsHubOpen((v) => !v)}
-                title={tt(lang, "tele_nav")}
-                aria-label={tt(lang, "tele_nav")}
+                className={`reader-big-btn reader-more-btn ${bigMenu === "more" ? "open" : ""}`}
+                onClick={() => setBigMenu((v) => (v === "more" ? null : "more"))}
+                aria-expanded={bigMenu === "more"}
+                aria-haspopup="menu"
+                title={t("reader_menu_more")}
+                aria-label={t("reader_menu_more")}
               >
-                📊
+                <span className="reader-big-ico" aria-hidden>☰</span>
+                <span className="reader-big-caret" aria-hidden>▾</span>
               </button>
-              {statsHubOpen && (
+              {bigMenu === "more" && (
                 <>
-                  <div className="stats-hub-backdrop" onClick={() => setStatsHubOpen(false)} />
-                  <div className="stats-hub-menu">
-                    <Link href="/telemetria" onClick={() => setStatsHubOpen(false)}>
-                      📊 {tt(lang, "tele_nav")}
+                  <div className="big-menu-backdrop" onClick={() => setBigMenu(null)} />
+                  <div className="reader-big-menu reader-more-menu" role="menu">
+                    <a href="/ajuda" target="_blank" rel="noreferrer" role="menuitem" className="reader-big-item">
+                      <span aria-hidden>❓</span> <span>{t("help_title")}</span>
+                    </a>
+                    <Link href="/telemetria" role="menuitem" className="reader-big-item" onClick={() => setBigMenu(null)}>
+                      <span aria-hidden>📊</span> <span>{tt(lang, "tele_nav")}</span>
                     </Link>
-                    <Link href="/mural-das-ias" onClick={() => setStatsHubOpen(false)}>
-                      {tt(lang, "tele_mural_btn")}
+                    <Link href="/mural-das-ias" role="menuitem" className="reader-big-item" onClick={() => setBigMenu(null)}>
+                      <span aria-hidden>🏆</span> <span>{tt(lang, "tele_mural_btn")}</span>
                     </Link>
+                    {onOpenSettings && (
+                      <button
+                        type="button"
+                        role="menuitem"
+                        className={`reader-big-item ${configReady ? "" : "muted-unset"}`}
+                        onClick={() => { setMenuVisible(true); setBigMenu(null); onOpenSettings(); }}
+                      >
+                        <span aria-hidden>⚙️</span> <span>{t("reader_settings")}</span>
+                        {!configReady && <span className="badge-dot" aria-hidden />}
+                      </button>
+                    )}
                   </div>
                 </>
               )}
             </div>
-            {/* ⚙️ Configurações */}
-            {onOpenSettings && (
-              <button
-                onClick={() => {
-                  setMenuVisible(true);
-                  onOpenSettings();
-                }}
-                className={`icon-btn settings-gear ${configReady ? "" : "unset"}`}
-                title={t("reader_settings")}
-                aria-label={t("settings")}
-              >
-                ⚙️
-              </button>
-            )}
-            {/* 👤 Login (AuthGate: Google OU e-mail — modal com as duas portas) */}
-            {auth && <AuthGate />}
-            {/* ⛶ tela cheia e 👁 esconder menu FORAM PRA CHAVE DE ZOOM
-                (pedido do Miguel, 25/08: "menu quebrou pra 2 linhas porque
-                tem item demais — deixa maximizar e o olho junto da chave
-                de +− do zoom"). Header volta a caber numa linha. */}
           </div>
         </div>
 

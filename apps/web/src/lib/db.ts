@@ -42,6 +42,10 @@ export interface Session {
   book: ParsedBook;
   /** Buffer do PDF original (só quando sourceFormat === "pdf"). */
   pdfSource: Uint8Array | null;
+  /** Buffer do EPUB original — pra backup/restauração na nuvem (regra do
+   *  Miguel, 31/08: a estante só aceita o livro ORIGINAL, nunca texto
+   *  convertido). */
+  epubSource?: Uint8Array | null;
   chapterIdx: number;
   zoom: number;
   savedAt: number;
@@ -72,6 +76,38 @@ export interface Session {
  * a Promise ficaria pendente pra sempre e travaria o app. Por isso o
  * timeout de segurança: se não responder em 5s, rejeita.
  */
+/**
+ * Abre o banco pedindo uma versão, com CURA de VersionError: se o banco já
+ * estiver numa versão MAIOR (caso da v1 da obra MOKA, que chegou a subir o
+ * "igot" pra v3), reabre SEM versão — anexa à atual. Os stores sessions/
+ * books continuam lá (o upgrade alheio era aditivo), então nada se perde.
+ */
+function openVersionSafe(
+  name: string,
+  version: number,
+  onUpgrade: (db: IDBDatabase) => void,
+): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const attempt = (withVersion: boolean) => {
+      const req = withVersion
+        ? indexedDB.open(name, version)
+        : indexedDB.open(name);
+      req.onupgradeneeded = () => onUpgrade(req.result);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => {
+        const err = req.error;
+        // DOMException VersionError = name "VersionError" (code 12 legado)
+        if (withVersion && err && /VersionError/i.test(`${err.name} ${err.message}`)) {
+          attempt(false); // banco em versão maior: anexa à atual
+          return;
+        }
+        reject(err ?? new Error("Erro ao abrir IndexedDB."));
+      };
+    };
+    attempt(true);
+  });
+}
+
 function openDB(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     if (typeof indexedDB === "undefined") {
@@ -85,27 +121,27 @@ function openDB(): Promise<IDBDatabase> {
         reject(new Error("Timeout ao abrir IndexedDB (5s)."));
       }
     }, 5000);
-    const req = indexedDB.open(DB_NAME, DB_VERSION);
-    req.onupgradeneeded = () => {
-      const db = req.result;
+    openVersionSafe(DB_NAME, DB_VERSION, (db) => {
       if (!db.objectStoreNames.contains(STORE)) {
         db.createObjectStore(STORE); // key-path externo; usamos chave fixa
       }
-    };
-    req.onsuccess = () => {
-      if (!settled) {
-        settled = true;
-        clearTimeout(timer);
-        resolve(req.result);
-      }
-    };
-    req.onerror = () => {
-      if (!settled) {
-        settled = true;
-        clearTimeout(timer);
-        reject(req.error ?? new Error("Erro ao abrir IndexedDB."));
-      }
-    };
+    })
+      .then((db) => {
+        if (!settled) {
+          settled = true;
+          clearTimeout(timer);
+          resolve(db);
+        } else {
+          db.close();
+        }
+      })
+      .catch((err) => {
+        if (!settled) {
+          settled = true;
+          clearTimeout(timer);
+          reject(err);
+        }
+      });
   });
 }
 
@@ -182,32 +218,33 @@ function openDBWithBooks(): Promise<IDBDatabase> {
       }
     }, 5000);
 
-    // Tenta abrir na versão 2 (com o store 'books'). Se falhar por upgrade,
-    // o onupgradeneeded cria o store.
-    const req = indexedDB.open(DB_NAME, 2);
-    req.onupgradeneeded = () => {
-      const db = req.result;
+    // Tenta abrir na versão 2 (com o store 'books'). Se o banco já estiver
+    // numa versão MAIOR (v1 da obra MOKA chegou a criar a v3), a cura do
+    // openVersionSafe anexa à versão atual — sessions/books seguem lá.
+    openVersionSafe(DB_NAME, 2, (db) => {
       if (!db.objectStoreNames.contains(STORE)) {
         db.createObjectStore(STORE); // sessions (legado)
       }
       if (!db.objectStoreNames.contains(BOOKS_STORE)) {
         db.createObjectStore(BOOKS_STORE, { keyPath: "id" });
       }
-    };
-    req.onsuccess = () => {
-      if (!settled) {
-        settled = true;
-        clearTimeout(timer);
-        resolve(req.result);
-      }
-    };
-    req.onerror = () => {
-      if (!settled) {
-        settled = true;
-        clearTimeout(timer);
-        reject(req.error ?? new Error("Erro ao abrir IndexedDB."));
-      }
-    };
+    })
+      .then((db) => {
+        if (!settled) {
+          settled = true;
+          clearTimeout(timer);
+          resolve(db);
+        } else {
+          db.close();
+        }
+      })
+      .catch((err) => {
+        if (!settled) {
+          settled = true;
+          clearTimeout(timer);
+          reject(err);
+        }
+      });
   });
 }
 

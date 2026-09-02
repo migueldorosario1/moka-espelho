@@ -1,15 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { CafezinhoLogo } from "@/components/CafezinhoLogo";
-import { ZeMocaAvatar } from "@/components/ZeMocaAvatar";
-import { LangSwitcher } from "@/components/LangSwitcher";
 import { SiteFooter } from "@/components/SiteFooter";
-import { AuthGate } from "@/components/AuthGate";
-import { TelemetryIconButton } from "@/components/TelemetryIconButton";
-import { MuralIconButton } from "@/components/MuralIconButton";
 import { useI18n } from "@/components/I18nProvider";
+import { LangSwitcher } from "@/components/LangSwitcher";
 
 /**
  * CAPA — fase GRATUITA (pivô do Miguel, 2026-08-04):
@@ -25,49 +19,14 @@ import { useI18n } from "@/components/I18nProvider";
  */
 export function Capa() {
   const { t } = useI18n();
-  const router = useRouter();
 
   return (
     <main className="igot-shell ft">
-      <div className="igot-topbar">
-        <div className="igot-topbar-left">
-          <Link href="/" className="brand" title="MOKA — Ir para página central">
-            <CafezinhoLogo size={26} opacity={0.85} />
-            <span>MOKA</span>
-          </Link>
-        </div>
-        <div className="igot-topbar-actions">
-          {/* QA-CHANGE (Kimi 3, 2026-08-05): "Quem somos" saiu das Configurações
-              e veio para o início da página (pedido do Miguel) — link direto /sobre */}
-          <Link href="/sobre" className="topbar-about" title="Quem somos — Saiba mais">
-            👥 {t("nav_about")}
-          </Link>
-          {/* 🤖 Ajuda do Zé Moca (agente-guia) — leva pro /ajuda por enquanto.
-              Futuro: abre o chat do Zé Moca. Ícone divertido ☕ (não ❓). */}
-          <Link
-            href="/ajuda"
-            className="topbar-help"
-            title={t("help_title")}
-            aria-label={t("help_title")}
-          >
-            <ZeMocaAvatar size={32} />
-          </Link>
-          {/* ⚙️ Configurações — tem que estar na capa também (não só no leitor). */}
-          <button
-            className="gear"
-            onClick={() => router.push("/configuracoes")}
-            aria-label={t("settings")}
-            title={t("settings")}
-          >
-            ⚙️
-          </button>
-          {/* 📊 Suas IAs e telemetria — visível na primeira página (Miguel, 22/08). */}
-          <TelemetryIconButton />
-          {/* 🏆 Mural das IAs — página própria (Miguel, 24/08). */}
-          <MuralIconButton />
-          <AuthGate />
-          <LangSwitcher />
-        </div>
+
+      {/* 🌐 Bandeirinha de idioma (ordem do Miguel, 31/08: o menu saiu
+          da capa, mas a bandeirinha FICA — ela é importante) */}
+      <div className="capa-lang">
+        <LangSwitcher />
       </div>
 
       <div className="capa-body">
@@ -92,22 +51,40 @@ export function Capa() {
           {t("capa_login_benefit")}
         </p>
 
-        {/* ── Ilustração Editorial de Destaque ── */}
-        <img
-          className="capa-hero-img"
-          src="/moka_hero_editorial.png"
-          alt="Moka — Inteligência de Leitura e Vídeos"
-        />
-
-        {/* ── Entradas do app (Estante & Videoteca) ── */}
-        <div className="capa-cards">
-          <a className="capa-card" href="/estante">
-            <b>📖 {t("capa_shelf_books")}</b>
+        {/* ── A FAMÍLIA MOKA (ordem do Miguel ~18h, corrigida ~19h: o
+            protagonista é o CONJUNTO — os cinco Mokas com a MESMA
+            importância, botões GRANDES e IGUAIS, capa funcional sem
+            ilustração decorativa) ── */}
+        <div className="capa-launch">
+          <a className="capa-launch-btn" href="/estante">
+            <span className="capa-launch-ico" aria-hidden>📖</span>
+            <b>Moka Reader</b>
             <span>{t("capa_books_desc")}</span>
           </a>
-          <a className="capa-card" href="/video">
-            <b>🎬 {t("capa_shelf_videos")}</b>
+          <a className="capa-launch-btn" href="/video">
+            <span className="capa-launch-ico" aria-hidden>🎬</span>
+            <b>Moka Vídeo</b>
             <span>{t("capa_videos_desc")}</span>
+          </a>
+          <a className="capa-launch-btn" href="/memoria">
+            <span className="capa-launch-ico" aria-hidden>🧠</span>
+            <b>Moka Memória</b>
+            <span>{t("mem_tagline")}</span>
+          </a>
+          <a className="capa-launch-btn" href="/harness">
+            <span className="capa-launch-ico" aria-hidden>💬</span>
+            <b>Moka Harness</b>
+            <span>{t("capa_harness_desc")}</span>
+          </a>
+          <a className="capa-launch-btn" href="/writer">
+            <span className="capa-launch-ico" aria-hidden>✍️</span>
+            <b>Moka Writer</b>
+            <span>{t("wr_tagline")}</span>
+          </a>
+          <a className="capa-launch-btn" href="/configuracoes">
+            <span className="capa-launch-ico" aria-hidden>⚙️</span>
+            <b>{t("settings")}</b>
+            <span>{t("capa_btn_settings_desc")}</span>
           </a>
         </div>
 

@@ -1,4 +1,5 @@
 "use client";
+import { TopNav } from "@/components/TopNav";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -357,15 +358,8 @@ export default function TelemetriaPage() {
     <main className="cfg-page">
       {/* TopBar padrão (como /configuracoes) — logo + idioma + fechar,
           pra pessoa poder mudar a língua daqui também (Miguel, 22/08). */}
-      <div className="igot-topbar">
-        <div className="igot-topbar-left">
-          <Link href="/estante" className="brand" title="Voltar à estante">
-            <CafezinhoLogo size={26} opacity={0.85} /> <span>Moka</span>
-          </Link>
-          <span className="cfg-topbar-label">📊 {tt(lang, "tele_nav")}</span>
-        </div>
-        <div className="igot-topbar-actions">
-          <AuthGate />
+      <TopNav right={<>
+<AuthGate />
           <LangSwitcher />
           <button
             className="cfg-close-btn"
@@ -375,8 +369,12 @@ export default function TelemetriaPage() {
           >
             ✕
           </button>
-        </div>
-      </div>
+
+          <Link href="/estante" className="brand" title="Voltar à estante">
+            <CafezinhoLogo size={26} opacity={0.85} /> <span>Moka</span>
+          </Link>
+          <span className="cfg-topbar-label">📊 {tt(lang, "tele_nav")}</span>
+      </>} />
 
       <div className="cfg-container">
         <header className="cfg-header">

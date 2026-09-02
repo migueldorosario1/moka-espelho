@@ -1,4 +1,5 @@
 "use client";
+import { TopNav, TopNavActions } from "@/components/TopNav";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -8,6 +9,7 @@ import { LangSwitcher } from "@/components/LangSwitcher";
 import { AuthGate } from "@/components/AuthGate";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SettingsForm } from "@/components/SettingsForm";
+import { CloudSettings } from "@/components/CloudSettings";
 import { A11yControls } from "@/components/A11yControls";
 import { useI18n } from "@/components/I18nProvider";
 import type { AIConfig } from "@igot/ai-providers";
@@ -59,28 +61,9 @@ export default function ConfiguracoesPage() {
 
   return (
     <main className="cfg-page">
-      {/* TopBar — NÃO fixo (rola com a página, pedido do Miguel 09/08). */}
-      <div className="igot-topbar">
-        <div className="igot-topbar-left">
-          <Link href="/estante" className="brand" title="Voltar à estante">
-            <CafezinhoLogo size={26} opacity={0.85} /> <span>Moka</span>
-          </Link>
-          <span className="cfg-topbar-label">⚙️ {t("settings")}</span>
-        </div>
-        <div className="igot-topbar-actions">
-          <AuthGate />
-          <LangSwitcher />
-          {/* ✕ Fechar — volta pra onde o usuário veio (estante, leitor, vídeo). */}
-          <button
-            className="cfg-close-btn"
-            onClick={() => router.back()}
-            aria-label={t("close")}
-            title={t("close")}
-          >
-            ✕
-          </button>
-        </div>
-      </div>
+      {/* TopBar PADRÃO da casa (reforma 31/08: era logo dos dois lados e
+          menu diferente — agora igual a TODAS as outras páginas). */}
+      <TopNav right={<TopNavActions />} />
 
       {/* Corpo largo e respirável — rola naturalmente com a página. */}
       <div className="cfg-container">
@@ -100,6 +83,13 @@ export default function ConfiguracoesPage() {
         <section className="cfg-section">
           <h2 className="cfg-section-title">{t("cfg_keys_section")}</h2>
           <SettingsForm initial={config} onSaved={handleSaved} />
+        </section>
+
+        {/* ☁️ Memória na nuvem (ordem do Miguel, 31/08): o "espaçozinho" pro
+            token do Cloudflare R2 / Backblaze B2 — backup da memória do usuário. */}
+        <section className="cfg-section">
+          <h2 className="cfg-section-title">☁️ {t("cloud_title")}</h2>
+          <CloudSettings />
         </section>
       </div>
 

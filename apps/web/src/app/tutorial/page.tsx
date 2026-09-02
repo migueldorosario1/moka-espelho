@@ -34,6 +34,7 @@ export default function Tutorial() {
     { n: "3", title: t("tut_s3_t"), desc: t("tut_s3_d") },
     { n: "4", title: t("tut_s4_t"), desc: t("tut_s4_d1"), extra: [t("tut_s4_d2"), t("tut_s4_d3")] },
     { n: "5", title: t("tut_s5_t"), desc: t("tut_s5_d") },
+    { n: "6", title: t("tut_s6_t"), desc: t("tut_s6_d"), extra: [t("tut_s6_d2")] },
   ];
 
   return (

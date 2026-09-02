@@ -1028,6 +1028,67 @@ export async function askStream(
 }
 
 /**
+ * CHAT LIVRE com systemPrompt + contexto customizados (OBRA MOKA · HARNESS).
+ *
+ * É o motor do "secretário do conhecimento": o HARNESS monta o contexto a
+ * partir da MEMÓRIA do usuário (objetos pesquisáveis) e conversa com a IA
+ * da própria chave dele (BYOK). Mesma proteção das outras rotas: trava de
+ * tokens + ledger de telemetria (o consumo aparece em Suas IAs).
+ */
+export async function askFreeStream(
+  question: string,
+  systemPrompt: string,
+  contextText: string,
+  onChunk: StreamCallback,
+): Promise<AIActionResult> {
+  if (!question.trim()) return { ok: false, error: "Pergunta ausente." };
+  const meta: CallMeta = { task: "harness", promptText: question, systemPrompt, contextText };
+
+  const capMsg = capBlockedMessage(meta);
+  if (capMsg) return { ok: false, error: capMsg };
+
+  let identity: CallIdentity | undefined;
+  try {
+    const { provider, config } = resolveProvider();
+    identity = identityOf(provider, config);
+    let usage: UsageInfo | undefined;
+    const captureUsage = (u: UsageInfo) => {
+      usage = u;
+    };
+    if (!provider.stream) {
+      const result = await provider.complete(question, {
+        systemPrompt,
+        context: contextText,
+        temperature: 0.5,
+        onUsage: captureUsage,
+      });
+      onChunk(result.text, result.text);
+      recordCall({ meta, identity, usage, completionText: result.text });
+      return { ok: true, text: result.text };
+    }
+    const { full, capCut } = await runStreamWithCap({
+      streamFn: provider.stream.bind(provider),
+      text: question,
+      systemPrompt,
+      contextText,
+      temperature: 0.5,
+      meta,
+      onChunk,
+      onUsage: captureUsage,
+    });
+    recordCall({ meta, identity, usage, completionText: full });
+    return {
+      ok: true,
+      text: full,
+      warning: capCut ? t(getTargetLang(), "errCapCut", { cap: getPrefs().tokenCap }) : undefined,
+    };
+  } catch (err) {
+    recordCall({ meta, identity, status: "error" });
+    return { ok: false, error: toMessage(err) };
+  }
+}
+
+/**
  * Resume um texto (página ou compilação do livro) com streaming.
  *
  * `scope` = "page" (a página na tela — resumo direto e fiel) ou

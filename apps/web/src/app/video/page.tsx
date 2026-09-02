@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { CafezinhoLogo } from "@/components/CafezinhoLogo";
 import { SettingsModal } from "@/components/SettingsModal";
-import { SectionSwitcher } from "@/components/SectionSwitcher";
+import { TopNav, TopNavActions } from "@/components/TopNav";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { TelemetryIconButton } from "@/components/TelemetryIconButton";
 import { AuthGate } from "@/components/AuthGate";
@@ -444,29 +444,7 @@ export default function HomePage() {
 
   return (
     <main className="igot-shell">
-      <div className="igot-topbar">
-        <div className="igot-topbar-left">
-          <Link href="/" className="brand" title="Moka — Ir para página central">
-            <CafezinhoLogo size={26} opacity={0.85} />
-            <span>Moka</span>
-          </Link>
-          <SectionSwitcher active="video" />
-        </div>
-        <div className="igot-topbar-actions">
-          <AuthGate />
-          <LangSwitcher />
-          <button
-            className={`gear ${configReady ? "" : "unset"}`}
-            onClick={() => router.push("/configuracoes")}
-            aria-label="Configurações de IA"
-            title="Configurações de IA"
-          >
-            ⚙️
-          </button>
-          {/* 📊 Suas IAs e telemetria (pedido do Miguel, 22/08). */}
-          <TelemetryIconButton />
-        </div>
-      </div>
+      <TopNav active="video" right={<TopNavActions gearUnset={!configReady} />} />
 
       {/* Herói: cola o link */}
       <section className="hero">

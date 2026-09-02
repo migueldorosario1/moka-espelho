@@ -1,3 +1,4 @@
+import { TopNav } from "@/components/TopNav";
 import Link from "next/link";
 import { CafezinhoLogo } from "@/components/CafezinhoLogo";
 import { LlmPriceRanking } from "@/components/LlmPriceRanking";
@@ -18,15 +19,12 @@ import { SiteFooter } from "@/components/SiteFooter";
 export default function MuralDasIasPage() {
   return (
     <main className="estante-page">
-      <div className="igot-topbar">
-        <div className="igot-topbar-left">
-          <Link href="/" className="brand" title="Moka — Ir para página central">
+      <TopNav right={<>
+<Link href="/" className="brand" title="Moka — Ir para página central">
             <CafezinhoLogo size={26} opacity={0.85} /> <span>Moka</span>
           </Link>
           <span className="cfg-topbar-label">🏆 Mural das IAs</span>
-        </div>
-        <div className="igot-topbar-actions" />
-      </div>
+      </>} />
       <div className="cfg-container" style={{ maxWidth: 860 }}>
         <LlmPriceRanking />
         <div style={{ marginTop: 18 }}>

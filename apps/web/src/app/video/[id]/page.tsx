@@ -6,7 +6,7 @@ import Link from "next/link";
 import { CafezinhoLogo } from "@/components/CafezinhoLogo";
 import { SettingsModal } from "@/components/SettingsModal";
 import { VideoAskModal } from "@/components/VideoAskModal";
-import { SectionSwitcher } from "@/components/SectionSwitcher";
+import { TopNav, TopNavActions } from "@/components/TopNav";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { useAuth } from "@/lib/auth";
 import { Markdown } from "@/components/Markdown";
@@ -311,15 +311,7 @@ export default function VideoPage() {
 
   return (
     <main className="igot-shell">
-      <div className="igot-topbar">
-        <div className="igot-topbar-left">
-          <Link className="brand" href="/" title="Moka — Ir para página central">
-            <CafezinhoLogo size={26} opacity={0.85} />
-            <span>Moka</span>
-          </Link>
-          <SectionSwitcher active="video" />
-        </div>
-        <div className="igot-topbar-actions">
+      <TopNav active="video" right={<>
           <a
             className="gear"
             href="/video"
@@ -328,7 +320,6 @@ export default function VideoPage() {
           >
             ＋
           </a>
-          <LangSwitcher />
           <button
             className="gear"
             onClick={handleShare}
@@ -338,16 +329,8 @@ export default function VideoPage() {
           >
             📤
           </button>
-          <button
-            className={`gear ${configReady ? "" : "unset"}`}
-            onClick={() => setSettingsOpen(true)}
-            aria-label="Configurações de IA"
-            title="Configurações de IA"
-          >
-            ⚙️
-          </button>
-        </div>
-      </div>
+          <TopNavActions back={false} />
+        </>} />
 
       <div className="video-page">
         {/* Ficha do vídeo */}

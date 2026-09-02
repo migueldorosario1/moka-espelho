@@ -30,6 +30,9 @@ const PROBE_WIDTH = 150;
 /** Largura (px) da capa final. */
 const COVER_WIDTH = 360;
 
+/** Progresso reportado durante as varreduras (0..1 do trecho em curso). */
+export type CoverProgress = (done: number, total: number) => void;
+
 /**
  * Detecta PDF 100% IMAGEM (scan sem camada de texto): amostra as 10
  * primeiras páginas — se NENHUMA tem item de texto, é imagem pura
@@ -38,7 +41,7 @@ const COVER_WIDTH = 360;
  * (pedido do Miguel, 24/08). Best-effort: erro → false (nunca
  * bloqueia upload à toa).
  */
-export async function isImagePdf(data: ArrayBuffer): Promise<boolean> {
+export async function isImagePdf(data: ArrayBuffer, onProgress?: CoverProgress): Promise<boolean> {
   try {
     const pdfjs = await import("pdfjs-dist");
     if (typeof window !== "undefined") {
@@ -59,6 +62,7 @@ export async function isImagePdf(data: ArrayBuffer): Promise<boolean> {
         anyText = true;
       }
       page.cleanup();
+      onProgress?.(i, n);
     }
     await doc.destroy();
     return !anyText;
@@ -78,7 +82,7 @@ interface PageMetrics {
   maxBlobH: number; // altura do maior blob de tinta (0..1 da página)
 }
 
-export async function renderPdfCover(data: ArrayBuffer): Promise<string | null> {
+export async function renderPdfCover(data: ArrayBuffer, onProgress?: CoverProgress): Promise<string | null> {
   try {
     const pdfjs = await import("pdfjs-dist");
     if (typeof window !== "undefined") {
@@ -92,8 +96,10 @@ export async function renderPdfCover(data: ArrayBuffer): Promise<string | null> 
     const metrics: PageMetrics[] = [];
     for (let i = 1; i <= n; i++) {
       metrics.push(await measurePage(doc, i));
+      onProgress?.(i, n + 1); // +1 = renderização final da capa escolhida
     }
     const escolhida = pickCoverPage(metrics, n);
+    onProgress?.(n + 1, n + 1);
 
     const page = await doc.getPage(escolhida);
     const base = page.getViewport({ scale: 1 });

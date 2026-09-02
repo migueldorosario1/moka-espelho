@@ -4,8 +4,8 @@
    A IA é invisível; o texto é o protagonista. */
 
 :root {
-  /* Cores — LIGHT MODE (Porcelana Azul + Safira Nobre + Cobalto) */
-  --bg: #f0f4f9;              /* porcelana azulada elegante (fundo) */
+  /* Cores — LIGHT MODE (Amanhecer Azul + Porcelana + Safira) */
+  --bg: linear-gradient(180deg, #f4f7fb 0%, #e8eef7 100%); /* Amanhecer no ambiente */
   --surface: #ffffff;         /* louça branca pura (cards/superfícies) */
   --surface-alt: #e2ebf6;     /* azul acinzentado suave (áreas secundárias) */
   --text: #0f172a;            /* azul noite / espresso azulado (texto principal) */
@@ -71,15 +71,15 @@
    O usuário escolhe o tema no controle de acessibilidade; o JS seta
    data-theme no <html>. Isto SOBREPÕE o prefers-color-scheme automático. */
 
-/* DARK forte (preto + letra branca) — mais dramático que o automático. */
+/* DARK forte (Amanhecer Azul Escuro). */
 :root[data-theme="dark"] {
-  --bg: #0a0a0c;
-  --surface: #16161a;
-  --surface-alt: #1f1f25;
-  --text: #f5f5f7;
-  --text-muted: #a0a0ab;
-  --border: #2e2e36;
-  --border-soft: #232329;
+  --bg: linear-gradient(180deg, #0b132b 0%, #0a0f22 100%);
+  --surface: #1c2541;
+  --surface-alt: #192138;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --border: #334155;
+  --border-soft: rgba(51, 65, 85, 0.7);
   --accent: #60a5fa;
   --accent-soft: #1e293b;
   --accent-dark: #3b82f6;
@@ -174,14 +174,14 @@
    (a especificidade de [data-theme] no :root ganha do media query). */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    /* DARK MODE (Azul Noite Profundo + Safira à meia-luz) */
-    --bg: #0b132b;            /* azul noite profundo (fundo) */
-    --surface: #1c2541;       /* azul safira escuro (superfícies) */
-    --surface-alt: #2a385b;   /* azul cobalto escuro */
+    /* DARK MODE (Amanhecer Azul Escuro) */
+    --bg: linear-gradient(180deg, #0b132b 0%, #0a0f22 100%);
+    --surface: #1c2541;
+    --surface-alt: #192138;
     --text: #f1f5f9;          /* porcelana branca (texto) */
     --text-muted: #94a3b8;    /* azul ardósia claro (texto secundário) */
     --border: #334155;        /* borda azul noite */
-    --border-soft: #1e293b;
+    --border-soft: rgba(51, 65, 85, 0.7);
     --accent: #60a5fa;        /* azul safira iluminado */
     --accent-soft: #1e293b;   /* azul escuro (hover) */
     --accent-dark: #3b82f6;   /* azul cobalto médio */
@@ -224,8 +224,10 @@ html,
 body {
   margin: 0;
   padding: 0;
-  height: 100%;
+  overflow-x: clip;
+  min-height: 100vh;
   background: var(--bg);
+  background-attachment: fixed;
   color: var(--text);
   font-family: var(--font-sans);
   font-size: 16px;
@@ -233,6 +235,7 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
+
 
 /* Foco visível — anel de cobre suave, só via teclado */
 :focus-visible {
@@ -1768,13 +1771,13 @@ a:hover {
   border: 1px solid var(--border-soft);
 }
 .section-switch-btn {
-  width: 36px;
-  height: 36px;
+  width: 46px;
+  height: 46px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-pill);
-  font-size: 17px;
+  font-size: 23px;
   text-decoration: none;
   opacity: 0.55;
   transition: background var(--transition), opacity var(--transition),
@@ -2086,24 +2089,51 @@ main.igot-shell.ft {
   overflow-y: auto !important;
 }
 .ft {
-  --ft-paper: #faf8f5;
-  --ft-paper-warm: #f6efe3;
-  --ft-paper-deep: #eee3d1;
-  --ft-surface: #fffcf5;
-  --ft-ink: #2b2015;
-  --ft-ink-soft: #7c6856;
-  --ft-hairline: #e3d6c1;
-  --ft-hairline-soft: #ede3d2;
+  --ft-paper: #f4f7fb;
+  --ft-paper-warm: #e8eef7;
+  --ft-paper-deep: #dbeafe;
+  --ft-surface: #ffffff;
+  --ft-ink: #0f172a;
+  --ft-ink-soft: #475569;
+  --ft-hairline: rgba(203, 213, 225, 0.45);
+  --ft-hairline-soft: rgba(203, 213, 225, 0.3);
   --ft-teal: #0f7680;
-  --ft-copper: #a35d2f;
-  --ft-copper-dark: #7e4522;
-  --ft-crema: #f3e4d0;
-  --ft-gold: #c2955c;
+  --ft-copper: #1e40af;
 
-  background: linear-gradient(180deg, var(--ft-paper) 0%, var(--ft-paper-warm) 100%);
+  background: linear-gradient(180deg, #f4f7fb 0%, #e8eef7 100%) !important;
+  background-attachment: fixed !important;
   color: var(--ft-ink);
   min-height: 100vh;
 }
+
+:root[data-theme="dark"] .ft {
+  --ft-paper: #0b132b;
+  --ft-paper-warm: #0a0f22;
+  --ft-surface: #1c2541;
+  --ft-ink: #f1f5f9;
+  --ft-ink-soft: #94a3b8;
+  --ft-hairline: rgba(51, 65, 85, 0.7);
+  --ft-hairline-soft: rgba(51, 65, 85, 0.5);
+  --ft-copper: #60a5fa;
+
+  background: linear-gradient(180deg, #0b132b 0%, #0a0f22 100%) !important;
+  background-attachment: fixed !important;
+  color: #f1f5f9 !important;
+}
+:root[data-theme="dark"] .ft .capa-logo,
+:root[data-theme="dark"] .ft .capa-tagline,
+:root[data-theme="dark"] .ft .capa-path b {
+  color: #f1f5f9 !important;
+}
+:root[data-theme="dark"] .ft .capa-path span {
+  color: #94a3b8 !important;
+}
+:root[data-theme="dark"] .ft .capa-kicker {
+  background: #1e293b !important;
+  color: #60a5fa !important;
+  border-color: rgba(96, 165, 250, 0.3) !important;
+}
+
 .ft .igot-topbar {
   background: rgba(250, 248, 245, 0.92);
   backdrop-filter: blur(12px);
@@ -2432,10 +2462,11 @@ main.igot-shell.ft {
 }
 .add-book-btn {
   padding: 10px 20px;
+  min-height: 44px;
   border: none;
   background: linear-gradient(180deg, var(--accent), var(--accent-dark));
   color: #fff8ee;
-  border-radius: var(--radius-pill);
+  border-radius: var(--btn-radius-md, 12px);
   font-size: var(--text-sm);
   font-weight: 600;
   letter-spacing: 0.01em;
@@ -2452,11 +2483,12 @@ main.igot-shell.ft {
   transform: translateY(0) scale(0.98);
 }
 .clear-shelf-btn {
-  padding: 9px 16px;
+  padding: 10px 16px;
+  min-height: 44px;
   border: 1px solid transparent;
   background: transparent;
   color: var(--text-muted);
-  border-radius: var(--radius-pill);
+  border-radius: var(--btn-radius-md, 12px);
   font-size: var(--text-sm);
   cursor: pointer;
   transition: border-color var(--transition), color var(--transition), background var(--transition);
@@ -2473,15 +2505,17 @@ main.igot-shell.ft {
   position: absolute;
   top: 8px;
   right: 8px;
-  width: 32px;
-  height: 32px;
+  min-width: 44px;
+  min-height: 44px;
+  width: 44px;
+  height: 44px;
   border: none;
   background: rgba(30, 20, 12, 0.55);
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
   color: #fff8ee;
-  border-radius: 50%;
-  font-size: 13px;
+  border-radius: var(--btn-radius-md, 12px);
+  font-size: 14px;
   cursor: pointer;
   opacity: 0.65;
   transition: opacity var(--transition), background var(--transition);
@@ -2636,8 +2670,9 @@ main.igot-shell.ft {
 /* ─── /biblioteca (Livraria Livre) — estilos globais pra matar o FOUC:
    styled-jsx injeta depois do primeiro paint na navegação client-side;
    aqui o estilo chega junto com a página. (Miguel, 2026-08-05) ─── */
-.bib { min-height: 100vh; background: #fff6ee; color: #1a1a1a; }
-.bib-topbar { background: #fff6ee; border-bottom: 1px solid #e8d9c8; }
+/* Padronização (ordem do Miguel, 31/08: "um tá bege, outro tá azulzinho —
+   unificar"): biblioteca e ajuda acompanham o fundo/cor das demais páginas. */
+.bib { min-height: 100vh; background: var(--bg); color: var(--text); }
 .bib-body { max-width: 980px; margin: 0 auto; padding: 36px 22px 64px; }
 .bib-kicker {
   text-transform: uppercase; letter-spacing: 0.16em; font-size: 11px;
@@ -3728,9 +3763,8 @@ body {
   color: var(--text-muted);
   font-size: 13px;
 }
-        .help { min-height: 100vh; background: #fff6ee; color: #1a1a1a; }
-        .help-topbar { background: #fff6ee; border-bottom: 1px solid #d9c8b8; }
-        .help-body { max-width: 640px; margin: 0 auto; padding: 40px 22px 64px; }
+        .help { min-height: 100vh; background: var(--bg); color: var(--text); }
+                .help-body { max-width: 640px; margin: 0 auto; padding: 40px 22px 64px; }
 
         /* 🤖 Banner do Zé Moca — destaque no topo da ajuda */
         .ze-moca-banner {
@@ -4349,19 +4383,19 @@ flex-shrink: 0;
 z-index: 1000;
 }
 .lang-switcher-btn {
-display: flex;
-align-items: center;
-gap: 6px;
-width: ${compact ? "42px" : "auto"};
-height: 42px;
-padding: ${compact ? "0" : "0 12px"};
-border: 1px solid var(--border);
-background: var(--surface);
-border-radius: 10px;
-font-size: 18px;
-cursor: pointer;
-transition: all 150ms ease;
-justify-content: center;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 1px solid var(--border-soft, #ccc);
+  background: var(--surface, #fff);
+  border-radius: var(--btn-radius-md, 12px);
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 150ms ease;
+  justify-content: center;
 }
 .lang-switcher-btn:hover {
 border-color: var(--accent);
@@ -6103,12 +6137,15 @@ gap: 6px;
 flex-wrap: wrap;
 min-height: 42px;
 }
-/* Container principal: GRID (scroll + right) */
+/* Container principal: GRID — pequenos | BOTÕES GRANDES | controles.
+   Reforma 31/08: os botões grandes saíram da reader-row-scroll (o
+   overflow-x da fileira CORTAVA os submenus — "não abre no celular"). */
 .reader-row-main {
 display: grid;
-grid-template-columns: minmax(0, 1fr) max-content;
+grid-template-areas: "left big right";
+grid-template-columns: minmax(0, auto) 1fr max-content;
 align-items: center;
-gap: 6px;
+gap: 8px;
 width: 100%;
 min-width: 0;
 overflow: visible;
@@ -8350,3 +8387,1489 @@ font-size: 14px;
 }
 .page-ai-cancel-btn:hover { filter: brightness(1.1); }
 .page-ai-cancel-inline { margin-top: 4px; padding: 6px 14px; font-size: 13px; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   🧠 MOKA MEMÓRIA (obra MOKA, 30/08/2026 — DSC-019: botões GRANDES)
+   Página /memoria — gerenciador da memória do conhecimento.
+   ══════════════════════════════════════════════════════════════════════ */
+.memoria-page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 16px 32px;
+}
+.memoria-hero {
+  text-align: center;
+  padding: 22px 8px 6px;
+}
+.memoria-hero-icon {
+  font-size: 44px;
+  line-height: 1;
+}
+.memoria-hero h1 {
+  font-size: 26px;
+  margin: 6px 0 4px;
+}
+.memoria-tagline {
+  opacity: 0.75;
+  margin: 0 0 4px;
+}
+.memoria-count {
+  font-size: 14px;
+  opacity: 0.6;
+  margin: 0;
+}
+.memoria-tabs {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 14px 0 10px;
+}
+.memoria-tab {
+  padding: 10px 22px;
+  font-size: 16px;
+  border-radius: var(--radius-pill, 999px);
+  border: 1px solid var(--border-soft, #ccc);
+  background: var(--surface-alt, transparent);
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  opacity: 0.65;
+}
+.memoria-tab.active {
+  opacity: 1;
+  background: var(--surface, #fff);
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.12));
+}
+.memoria-flash {
+  margin: 0 auto 10px;
+  max-width: 640px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+}
+.memoria-flash.ok {
+  color: #1a7f37;
+  background: rgba(26, 127, 55, 0.12);
+  animation: mem-pop 0.4s ease;
+}
+.memoria-flash.warn {
+  color: #9a6700;
+  background: rgba(156, 76, 0, 0.12);
+}
+@keyframes mem-pop {
+  0% { transform: scale(0.96); }
+  60% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+.memoria-main {
+  flex: 1;
+  width: 100%;
+}
+.memoria-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.memoria-btn {
+  padding: 10px 18px;
+  font-size: 15px;
+  border-radius: 12px;
+  border: 1px solid var(--border-soft, #ccc);
+  background: var(--surface, #fff);
+  cursor: pointer;
+  transition: transform 0.12s, background 0.15s, filter 0.15s;
+}
+.memoria-btn:hover { filter: brightness(1.05); }
+.memoria-btn:active { transform: scale(0.95); }
+.memoria-btn.big {
+  padding: 16px 26px;
+  font-size: 18px;
+  border-radius: 16px;
+}
+.memoria-btn.primary {
+  background: var(--accent, #ff9e3d);
+  border-color: transparent;
+  color: #1c1206;
+  font-weight: 700;
+}
+.memoria-btn.danger {
+  color: #b42318;
+  border-color: rgba(180, 35, 24, 0.35);
+}
+.memoria-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+/* Selo "já está na memória" — livro da estante já importado (ordem do
+   Miguel 31/08 ~22:55): mesma métrica do botão que substitui, tom de
+   sucesso suave que funciona no claro e no escuro. */
+.memoria-already {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 12px;
+  border: 1px solid rgba(34, 140, 90, 0.38);
+  background: rgba(34, 140, 90, 0.14);
+  color: #35a06b;
+  white-space: nowrap;
+}
+.memoria-mem.already .memoria-mem-info {
+  opacity: 0.62;
+}
+.memoria-hint {
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.6;
+  margin: 0 0 12px;
+}
+.memoria-search {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto 14px;
+  display: block;
+  padding: 14px 20px;
+  font-size: 17px;
+  border-radius: 14px;
+  border: 1px solid var(--border-soft, #ccc);
+  background: var(--surface, #fff);
+}
+.memoria-search:focus {
+  outline: 2px solid var(--accent, #ff9e3d);
+  outline-offset: 1px;
+}
+.memoria-dropzone {
+  border: 2px dashed var(--border-soft, #ccc);
+  border-radius: 14px;
+  padding: 10px;
+  margin-bottom: 16px;
+  transition: border-color 0.15s, background 0.15s;
+}
+.memoria-dropzone.over {
+  border-color: var(--accent, #ff9e3d);
+  background: var(--accent-soft, rgba(255, 158, 61, 0.1));
+}
+.memoria-dropzone.empty {
+  padding: 34px 16px;
+  cursor: pointer;
+}
+.memoria-drop-hint {
+  display: block;
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.55;
+}
+.memoria-empty {
+  text-align: center;
+}
+.memoria-empty-icon { font-size: 38px; }
+.memoria-empty strong { font-size: 18px; display: block; margin: 6px 0 4px; }
+.memoria-empty p { opacity: 0.7; margin: 0; max-width: 460px; margin-inline: auto; }
+.memoria-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+}
+.memoria-card {
+  border: 1px solid var(--border-soft, #ddd);
+  border-radius: 14px;
+  padding: 14px;
+  background: var(--surface, #fff);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.memoria-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.memoria-card-icon { font-size: 22px; }
+.memoria-card-title {
+  font-size: 17px;
+  font-weight: 700;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: inherit;
+  line-height: 1.3;
+}
+.memoria-card-title:hover { text-decoration: underline; }
+.memoria-card-author {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.75;
+}
+.memoria-card-tags { margin: 0; }
+.memoria-tag {
+  display: inline-block;
+  font-size: 12px;
+  background: var(--accent-soft, rgba(255,158,61,0.15));
+  border-radius: 999px;
+  padding: 2px 9px;
+  margin-right: 4px;
+}
+.memoria-card-snippet {
+  margin: 0;
+  font-size: 13px;
+  opacity: 0.65;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.memoria-card-meta {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.55;
+}
+.memoria-card-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 6px;
+}
+.memoria-card-actions.center { justify-content: center; margin-top: 12px; }
+.memoria-noresults {
+  text-align: center;
+  opacity: 0.65;
+  padding: 20px 0;
+}
+.memoria-mem-list {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 640px;
+  margin-inline: auto;
+}
+.memoria-mem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  border: 1px solid var(--border-soft, #ddd);
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: var(--surface, #fff);
+}
+.memoria-mem.active {
+  border-color: var(--accent, #ff9e3d);
+  box-shadow: 0 0 0 1px var(--accent, #ff9e3d) inset;
+}
+.memoria-mem-info { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.memoria-mem-date { font-size: 12px; opacity: 0.55; }
+.memoria-badge {
+  font-size: 12px;
+  background: var(--accent-soft, rgba(255,158,61,0.2));
+  border-radius: 999px;
+  padding: 2px 10px;
+}
+.memoria-mem-actions { display: flex; gap: 8px; }
+.memoria-new {
+  display: flex;
+  gap: 8px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.memoria-input {
+  flex: 1;
+  padding: 12px 16px;
+  font-size: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-soft, #ccc);
+  background: var(--surface, #fff);
+}
+.memoria-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 90;
+}
+.memoria-modal-box {
+  background: var(--surface, #fff);
+  color: inherit;
+  border-radius: 16px;
+  max-width: 760px;
+  width: 100%;
+  max-height: 86dvh;
+  overflow-y: auto;
+  padding: 18px;
+}
+.memoria-modal-box.small {
+  max-width: 440px;
+  text-align: center;
+}
+.memoria-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.memoria-modal-head h2 {
+  font-size: 20px;
+  margin: 0;
+}
+.memoria-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+  margin: 0 0 10px;
+  font-size: 13px;
+}
+.memoria-meta-grid dt {
+  opacity: 0.55;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.memoria-meta-grid dd { margin: 0; word-break: break-word; }
+.memoria-modal-summary {
+  background: var(--accent-soft, rgba(255,158,61,0.12));
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+}
+.memoria-modal-body {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 10px 0 0;
+}
+@media (max-width: 640px) {
+  .memoria-btn.big { padding: 15px 20px; font-size: 17px; width: 100%; }
+  .memoria-actions { flex-direction: column; align-items: stretch; }
+  .memoria-grid { grid-template-columns: 1fr; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   💬 MOKA HARNESS beta (obra MOKA, etapa 2 — 30/08/2026)
+   Chat com a IA do usuário (BYOK) que conhece a memória dele.
+   ══════════════════════════════════════════════════════════════════════ */
+.harness-page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 16px 24px;
+}
+.harness-hero { text-align: center; padding: 18px 8px 4px; }
+.harness-hero h1 { font-size: 24px; margin: 6px 0 4px; }
+.harness-chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 4px;
+  overflow-y: auto;
+  min-height: 42dvh;
+}
+.harness-empty {
+  text-align: center;
+  opacity: 0.65;
+  padding: 28px 0;
+}
+.harness-msg { display: flex; flex-direction: column; }
+.harness-msg.user { align-items: flex-end; }
+.harness-msg.assistant { align-items: flex-start; }
+.harness-bubble {
+  max-width: 86%;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 16px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.harness-msg.user .harness-bubble {
+  background: var(--accent, #ff9e3d);
+  color: #1c1206;
+  border-bottom-right-radius: 4px;
+}
+.harness-msg.assistant .harness-bubble {
+  background: var(--surface-alt, #f2f2f2);
+  border-bottom-left-radius: 4px;
+}
+.harness-typing { opacity: 0.6; }
+.harness-consulted {
+  font-size: 12px;
+  opacity: 0.6;
+  margin: 4px 6px 0;
+  max-width: 86%;
+}
+.harness-inputbar {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  padding-top: 8px;
+}
+.harness-input {
+  flex: 1;
+  resize: none;
+  padding: 14px 18px;
+  font-size: 17px;
+  border-radius: 16px;
+  border: 1px solid var(--border-soft, #ccc);
+  background: var(--surface, #fff);
+  font-family: inherit;
+  line-height: 1.4;
+}
+.harness-input:focus {
+  outline: 2px solid var(--accent, #ff9e3d);
+  outline-offset: 1px;
+}
+.harness-link { text-decoration: none; text-align: center; }
+@media (max-width: 640px) {
+  .harness-inputbar { flex-direction: column; align-items: stretch; }
+  .harness-inputbar .memoria-btn.big { width: 100%; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ✍️ MOKA WRITER v1 (obra MOKA, etapa 3 — ordem do Miguel 30/08 ~15h)
+   Estúdio de escrever: aba Estúdio (escrever/corrigir c/ IA + estilo)
+   e aba Ler. Botões GRANDES por natureza (DSC-019).
+   ══════════════════════════════════════════════════════════════════════ */
+.writer-page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 16px 28px;
+}
+.writer-main { flex: 1; width: 100%; }
+.writer-area {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 18px 20px;
+  font-size: 17px;
+  line-height: 1.7;
+  font-family: inherit;
+  border-radius: 14px;
+  border: 1px solid var(--border-soft, #ccc);
+  background: var(--surface, #fff);
+  resize: vertical;
+}
+.writer-area:focus { outline: 2px solid var(--accent, #ff9e3d); outline-offset: 1px; }
+.writer-idea {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+}
+.writer-style-toggle {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 15px;
+  text-align: left;
+  border-radius: 12px;
+  border: 1px dashed var(--border-soft, #ccc);
+  background: var(--surface-alt, transparent);
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+.writer-style-box { margin-bottom: 10px; }
+.writer-style-area {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  font-size: 15px;
+  font-family: inherit;
+  border-radius: 12px;
+  border: 1px solid var(--border-soft, #ccc);
+  background: var(--surface-alt, transparent);
+  resize: vertical;
+}
+.writer-read h2 { text-align: center; margin: 8px 0 14px; }
+.writer-read-body {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  line-height: 1.8;
+  margin: 0;
+}
+@media (max-width: 640px) {
+  .writer-idea { flex-direction: column; }
+  .writer-idea .memoria-btn.big { width: 100%; }
+}
+
+/* 🧠 Jogar na memória — botão embaixo do livro na estante (obra, 30/08) */
+.book-memory-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--btn-radius-md, 12px);
+  border: 1px solid var(--accent, #ff9e3d);
+  background: var(--accent-soft, rgba(255,158,61,0.14));
+  color: inherit;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.12s;
+}
+.book-memory-btn:hover { filter: brightness(1.06); }
+.book-memory-btn:active { transform: scale(0.96); }
+.book-memory-btn:disabled { opacity: 0.5; cursor: wait; }
+
+/* 🧮 OrcamentoModal — orçamento internacional */
+.or-title { font-size: 18px; margin: 0 0 10px; }
+.or-list { list-style: none; margin: 0 0 10px; padding: 0; text-align: left; font-size: 15px; display: flex; flex-direction: column; gap: 6px; }
+.or-list b { margin-right: 4px; opacity: 0.7; font-size: 13px; text-transform: uppercase; letter-spacing: 0.03em; }
+.or-sure { font-size: 15px; margin: 0 0 4px; }
+
+/* ═══ TopNav PADRONIZADO (obra ~17h: menus grandes + olhinho invisível) ═══ */
+.topnav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  /* Full-bleed (reforma 31/08): o menu vaza do container de cada página
+     (estante não tinha margem; memória 1080px, writer 880px...) e ganha
+     a MESMA margem interna em todas — logo nunca mais colado no canto. */
+  margin-inline: calc(50% - 50vw);
+  box-sizing: border-box;
+  padding: 8px 20px 6px;
+}
+.topnav-hidden {
+  justify-content: flex-end;
+}
+@media (max-width: 640px) {
+  .topnav { padding: 8px 14px 6px; }
+}
+.topnav-hidden {
+  justify-content: flex-end;
+}
+.topnav-eye {
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+  border-radius: var(--radius-pill, 999px);
+  border: 1px solid var(--border-soft, #ccc);
+  background: var(--surface-alt, transparent);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.topnav-eye:hover { background: var(--accent-soft, rgba(255,158,61,0.15)); }
+.memoria-kind-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 8px; }
+.memoria-badge.kind { background: var(--surface-alt, #eee); }
+@media (max-width: 640px) {
+  .section-switch-btn { width: 52px; height: 52px; font-size: 26px; }
+  .topnav-eye { width: 52px; height: 52px; font-size: 24px; }
+}
+
+/* 💬 Moka Harness destaque na capa + chips de memória no harness (~18h) */
+.capa-card-harness {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 22px 24px;
+  border: 2px solid var(--accent, #ff9e3d);
+  background: var(--accent-soft, rgba(255,158,61,0.12));
+  border-radius: 18px;
+  text-decoration: none;
+  color: inherit;
+  margin-bottom: 10px;
+}
+.capa-card-harness b { font-size: 22px; }
+.capa-card-harness span { font-size: 15px; opacity: 0.85; }
+.capa-card-cta { font-style: normal; font-weight: 700; color: var(--accent, #ff9e3d); font-size: 16px; }
+.harness-mems { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 8px 0 4px; }
+.harness-mem-chip {
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft, #ccc);
+  background: var(--surface-alt, transparent);
+  cursor: pointer;
+  opacity: 0.55;
+}
+.harness-mem-chip.on {
+  opacity: 1;
+  border-color: var(--accent, #ff9e3d);
+  background: var(--accent-soft, rgba(255,158,61,0.15));
+}
+
+/* ═══ CAPA FUNCIONAL: a FAMÍLIA MOKA em botões grandes e iguais (~19h) ═══ */
+/* ── Capa (reforma 31/08: "botões mais bonitos, TODOS do mesmo
+   tamanho" — sem TopNav no topo, a capa é limpa) ── */
+.capa-launch {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 22px auto 8px;
+  max-width: 820px;
+  width: 100%;
+}
+.capa-launch-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+  padding: 20px 12px 16px;
+  text-align: center;
+  border-radius: 20px;
+  border: 1px solid var(--border-soft, #ddd);
+  background: var(--surface, #fff);
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 3px 12px rgba(60, 40, 15, 0.07);
+  transition: transform 0.15s ease, box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+.capa-launch-btn:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent, #ff9e3d);
+  box-shadow: 0 10px 26px rgba(60, 40, 15, 0.14);
+}
+.capa-launch-btn:active { transform: scale(0.97); }
+.capa-launch-ico {
+  font-size: 34px;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+.capa-launch-btn b {
+  font-size: 17.5px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+.capa-launch-btn span {
+  font-size: 13px;
+  opacity: 0.72;
+  line-height: 1.4;
+}
+@media (max-width: 640px) {
+  .capa-launch { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .capa-launch-btn { padding: 16px 8px 14px; border-radius: 18px; }
+  .capa-launch-ico { font-size: 30px; }
+  .capa-launch-btn b { font-size: 15.5px; }
+  .capa-launch-btn span { font-size: 12px; }
+}
+@media (max-width: 380px) {
+  .capa-launch-ico { font-size: 26px; }
+  .capa-launch-btn b { font-size: 14.5px; }
+}
+
+/* ── Barra de progresso da ingestão de livros (ordem do Miguel, 31/08:
+   PDF grande não pode ficar "parado" — a pessoa tem que VER o % subindo). */
+.ingest-progress {
+  max-width: 460px;
+  margin: 22px auto;
+  text-align: center;
+}
+.ingest-progress-bar {
+  height: 16px;
+  border-radius: 999px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border-soft);
+  overflow: hidden;
+}
+.ingest-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+  transition: width 0.35s ease;
+  min-width: 6%;
+}
+.ingest-progress-label {
+  margin: 10px 0 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+.ingest-progress-pct { font-weight: 700; color: var(--text); }
+@media (max-width: 640px) {
+  .ingest-progress { margin: 18px 6px; }
+}
+
+/* ── ☁️ Memória na nuvem (R2/B2 do usuário — obra MOKA, 31/08) ── */
+.cloud-settings { max-width: 560px; }
+.cloud-intro {
+  font-size: 13.5px; line-height: 1.6; color: var(--text-muted);
+  margin: 0 0 14px;
+}
+.cloud-providers { display: flex; gap: 8px; flex-wrap: wrap; }
+.cloud-provider-btn {
+  padding: 10px 16px; min-height: 44px; border-radius: var(--btn-radius-md, 12px); cursor: pointer;
+  border: 1px solid var(--border-soft); background: var(--surface);
+  font-size: 13.5px; font-weight: 600; color: var(--text);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.cloud-provider-btn.active {
+  background: var(--accent-soft); border-color: var(--accent);
+}
+.cloud-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+.cloud-btn {
+  padding: 10px 16px; min-height: 44px; border-radius: var(--btn-radius-md, 12px); cursor: pointer;
+  border: 1px solid var(--border-soft); background: var(--surface);
+  font-size: 14px; font-weight: 600; color: var(--text);
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.cloud-btn:hover:not(:disabled) { background: var(--surface-alt); }
+.cloud-btn:disabled { opacity: 0.5; cursor: default; }
+.cloud-btn.primary {
+  background: linear-gradient(160deg, var(--accent), var(--accent-dark));
+  color: #fff8ee; border: none;
+}
+.cloud-msg { font-size: 13.5px; margin: 10px 0 0; font-weight: 600; }
+.cloud-msg.ok { color: #1f7a33; }
+.cloud-msg.err { color: #b3261e; }
+.cloud-note {
+  font-size: 12.5px; line-height: 1.55; color: var(--text-muted); margin: 8px 0 0;
+}
+.memoria-cloud {
+  display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+  margin-top: 12px;
+}
+.cloud-setup-link {
+  font-size: 13px; font-weight: 600; color: var(--accent-dark);
+  align-self: center;
+}
+@media (max-width: 640px) {
+  .cloud-btn { padding: 12px 16px; font-size: 15px; }
+  .cloud-provider-btn { padding: 10px 16px; font-size: 14px; }
+}
+
+/* ── 📖 Reforma 31/08: 3 BOTÕES GRANDES no leitor com submenus ──
+   (ordem do Miguel: "3, 4 botões grandes bem visíveis que abrem submenus") */
+.reader-big-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  justify-content: center;
+}
+.reader-big-wrap { position: relative; display: inline-flex; }
+.reader-big-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  min-height: 46px;
+  border-radius: 14px;
+  border: 1px solid var(--border-soft);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+.reader-big-btn:hover { background: var(--surface-alt); }
+.reader-big-btn:active { transform: scale(0.97); }
+.reader-big-btn.open {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.reader-big-ico { font-size: 20px; line-height: 1; }
+.reader-big-caret { font-size: 12px; opacity: 0.7; }
+.big-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+.reader-big-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 41;
+  min-width: 260px;
+  padding: 8px;
+  border-radius: 16px;
+  border: 1px solid var(--border-soft);
+  background: var(--surface);
+  box-shadow: 0 14px 40px rgba(23, 15, 8, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.reader-more-menu { left: auto; right: 0; }
+.reader-big-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.reader-big-item:hover { background: var(--surface-alt); }
+.reader-big-item.active { background: var(--accent-soft); }
+.reader-big-item span[aria-hidden] { font-size: 19px; }
+.reader-big-item .badge-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--accent); margin-left: auto;
+}
+.reader-more-btn { padding: 10px 14px; }
+@media (max-width: 640px) {
+  .reader-big-btn {
+    padding: 12px 14px;
+    min-height: 52px;
+    font-size: 16px;
+    border-radius: 16px;
+  }
+  .reader-big-ico { font-size: 22px; }
+  .reader-big-item { padding: 14px; font-size: 16px; }
+  .reader-big-label { display: none; }
+  .reader-big-btn:has(.reader-big-caret) .reader-big-caret { display: none; }
+}
+@media (max-width: 640px) {
+  /* No celular apertado a etiqueta some e o ícone cresce (fica redondão) */
+  .reader-big-group { gap: 8px; }
+}
+
+/* ── Reforma 31/08: áreas do header do leitor ── */
+.reader-row-scroll { grid-area: left; }
+.reader-big-group { grid-area: big; }
+.reader-row-right { grid-area: right; }
+@media (max-width: 760px) {
+  .reader-row-main {
+    grid-template-areas:
+      "left right"
+      "big big";
+    grid-template-columns: minmax(0, 1fr) max-content;
+  }
+  .reader-big-group { justify-content: flex-start; }
+  /* A chave de zoom (top fixo 64px) ficava ATRÁS do header de 2 linhas —
+     desce junto no celular (ordem do Miguel: "o menu ficou em cima do
+     joguinho vertical"). */
+  .zoom-rail { top: 132px; }
+}
+
+/* ── Chip "quem está ligada" (ordem do Miguel, 31/08: modelo LLM visível) ── */
+.llm-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--text);
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.15s ease;
+}
+.llm-chip:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(60,40,15,0.12); }
+.llm-chip.none { border-color: #b3261e; background: rgba(179,38,30,0.08); }
+
+/* Bandeirinha de idioma na capa (fica sozinha no topo — ordem do Miguel) */
+.capa-lang {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 16px 0;
+}
+
+/* Status do backup/restauração da estante na nuvem */
+.shelf-cloud-msg {
+  margin: 10px 0 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Botão de restaurar na estante VAZIA (novo aparelho) */
+.shelf-cloud-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0 16px 24px;
+}
+
+/* ✨ Cola mágica da nuvem */
+.cloud-magic {
+  width: 100%;
+  min-height: 90px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px dashed var(--accent);
+  background: var(--surface);
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  resize: vertical;
+}
+.cloud-magic:focus { outline: 2px solid var(--accent); }
+
+/* ═════════════════════════════════════════════════════════════════════
+   🎨 KIT DE BOTÃO UNIFICADO MOKA (Moka Button Design System v1.0)
+   Implementado após aprovação automática do parecer de design
+   ═════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Tokens de Raio e Geometria */
+  --btn-radius-sm: 8px;
+  --btn-radius-md: 12px;
+  --btn-radius-lg: 16px;
+  --btn-radius-pill: 999px;
+
+  /* Animações e Sombras de Elevação Tátil */
+  --btn-transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  --btn-shadow-rest: 0 1px 2px rgba(15, 23, 42, 0.05), 0 2px 5px rgba(15, 23, 42, 0.04);
+  --btn-shadow-hover: 0 4px 12px rgba(15, 23, 42, 0.08), 0 8px 22px rgba(15, 23, 42, 0.07);
+  --btn-shadow-active: 0 1px 2px rgba(15, 23, 42, 0.08);
+
+  /* Botão Primary (Ação Principal / CTA) */
+  --btn-primary-bg: linear-gradient(180deg, #1e40af 0%, #1e3a8a 100%);
+  --btn-primary-text: #ffffff;
+  --btn-primary-border: rgba(255, 255, 255, 0.18);
+  --btn-primary-hover-bg: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+
+  /* Botão Secondary (Cards / Superfícies Elevações) */
+  --btn-secondary-bg: var(--surface);
+  --btn-secondary-text: var(--text);
+  --btn-secondary-border: var(--border-soft);
+  --btn-secondary-hover-border: var(--accent);
+  --btn-secondary-hover-bg: var(--surface-alt);
+
+  /* Botão Ghost (Navegação / TopNav) */
+  --btn-ghost-bg: transparent;
+  --btn-ghost-text: var(--text-muted);
+  --btn-ghost-hover-bg: var(--accent-soft);
+  --btn-ghost-hover-text: var(--accent);
+}
+
+/* Modo Escuro (Tokens Calibrados) */
+:root[data-theme="dark"] {
+  --btn-shadow-rest: 0 2px 5px rgba(0, 0, 0, 0.4);
+  --btn-shadow-hover: 0 6px 18px rgba(0, 0, 0, 0.55), 0 0 12px rgba(96, 165, 250, 0.15);
+  --btn-primary-bg: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+  --btn-secondary-bg: #16161a;
+  --btn-secondary-border: #2e2e36;
+}
+
+/* Base Genérica do Botão Moka */
+.moka-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: var(--text-base);
+  line-height: 1.25;
+  border-radius: var(--btn-radius-md);
+  border: 1px solid transparent;
+  padding: 10px 18px;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition: var(--btn-transition);
+  box-shadow: var(--btn-shadow-rest);
+}
+
+.moka-btn:hover {
+  transform: translateY(-1.5px);
+  box-shadow: var(--btn-shadow-hover);
+}
+
+.moka-btn:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--btn-shadow-active);
+}
+
+.moka-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* 1. Botão Primary */
+.moka-btn-primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border-color: var(--btn-primary-border);
+}
+.moka-btn-primary:hover {
+  background: var(--btn-primary-hover-bg);
+}
+
+/* 2. Botão Secondary */
+.moka-btn-secondary {
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border-color: var(--btn-secondary-border);
+}
+.moka-btn-secondary:hover {
+  background: var(--btn-secondary-hover-bg);
+  border-color: var(--btn-secondary-hover-border);
+}
+
+/* 3. Botão Ghost (Navegação & Ícones) */
+.moka-btn-ghost {
+  background: var(--btn-ghost-bg);
+  color: var(--btn-ghost-text);
+  box-shadow: none;
+  border-color: transparent;
+}
+.moka-btn-ghost:hover {
+  background: var(--btn-ghost-hover-bg);
+  color: var(--btn-ghost-hover-text);
+  box-shadow: none;
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   🎨 SPEC DE CORES MOKA v2 — DIREÇÃO B: "AMANHECER AZUL"
+   Especificado pelo Diretor de Design (Claude), aprovado por Miguel
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* 0. Fundo Geral da Capa e Aplicação (Amanhecer no Ambiente) */
+body {
+  background: linear-gradient(180deg, #f4f7fb 0%, #e8eef7 100%);
+  background-attachment: fixed;
+}
+
+/* 1. Refinamento dos 6 Botões Grandes da Capa (.capa-launch-btn) */
+.capa-launch-btn {
+  border-radius: var(--btn-radius-lg, 16px) !important;
+  border: 1px solid rgba(203, 213, 225, 0.45) !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f9fbfe 92%, #f4f8fd 100%) !important;
+  box-shadow: 0 1px 2px rgba(23, 37, 84, 0.05), 0 3px 8px rgba(23, 37, 84, 0.05) !important;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.18s cubic-bezier(0.16, 1, 0.3, 1), background 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.capa-launch-btn:hover {
+  transform: translateY(-3px) !important;
+  border-color: rgba(30, 64, 175, 0.4) !important;
+  background: linear-gradient(180deg, #ffffff 0%, #eff5fc 100%) !important;
+  box-shadow: 0 6px 16px rgba(23, 37, 84, 0.09), 0 12px 32px rgba(23, 37, 84, 0.08) !important;
+}
+.capa-launch-btn:active {
+  transform: translateY(0) scale(0.98) !important;
+}
+
+/* Tipografia dos 6 cards — Remoção da opacidade dessaturante */
+.capa-launch-btn b {
+  color: #0f172a;
+  font-weight: 700;
+  font-size: 17.5px;
+  line-height: 1.25;
+}
+.capa-launch-btn span {
+  color: #475569;
+  font-size: 13px;
+  opacity: 1 !important; /* Sem dessaturação por opacidade */
+  line-height: 1.4;
+}
+
+/* 2. Caixinha do Ícone (.capa-launch-ico) com degradê diagonal gelo */
+.capa-launch-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #eaf1fb 0%, #dbeafe 100%) !important;
+  transition: background 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.capa-launch-btn:hover .capa-launch-ico {
+  background: linear-gradient(135deg, #dbeafe 0%, #c7dcfa 100%) !important;
+}
+
+/* 3. Cartões Secundários (.capa-path) — Sem pé azul forte */
+.capa-path {
+  background: linear-gradient(180deg, #ffffff 0%, #fafcfe 100%) !important;
+  border: 1px solid rgba(203, 213, 225, 0.4) !important;
+  box-shadow: 0 1px 3px rgba(23, 37, 84, 0.04) !important;
+  transition: border-color 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.capa-path:hover {
+  transform: none !important; /* Não levanta no hover */
+  border-color: rgba(30, 64, 175, 0.3) !important;
+  box-shadow: 0 2px 6px rgba(23, 37, 84, 0.06) !important;
+}
+
+/* 4. Botões-Pílula do Leitor (.reader-big-btn) — FORA do Amanhecer */
+.reader-big-btn {
+  border-radius: 999px !important;
+  border: 1px solid rgba(203, 213, 225, 0.5) !important;
+  background: #ffffff !important;
+  color: var(--text) !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05) !important;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.reader-big-btn:hover, .reader-big-btn.open {
+  border-color: rgba(30, 64, 175, 0.4) !important;
+  background: #dbeafe !important;
+  color: #172554 !important;
+  box-shadow: 0 4px 12px rgba(23, 37, 84, 0.08) !important;
+}
+.reader-big-btn:active {
+  transform: translateY(0) scale(0.98) !important;
+}
+
+/* 5. Modo Escuro (Dark Mode Specs para Amanhecer Azul) */
+:root[data-theme="dark"] body {
+  background: linear-gradient(180deg, #0b132b 0%, #0a0f22 100%) !important;
+  background-attachment: fixed !important;
+}
+:root[data-theme="dark"] .capa-launch-btn {
+  background: linear-gradient(180deg, #1c2541 0%, #192138 100%) !important;
+  border-color: rgba(51, 65, 85, 0.7) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}
+:root[data-theme="dark"] .capa-launch-btn:hover {
+  border-color: rgba(96, 165, 250, 0.45) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+}
+:root[data-theme="dark"] .capa-launch-btn b {
+  color: #f1f5f9 !important;
+}
+:root[data-theme="dark"] .capa-launch-btn span {
+  color: #94a3b8 !important;
+}
+:root[data-theme="dark"] .capa-launch-ico {
+  background: linear-gradient(135deg, #1e293b 0%, #233252 100%) !important;
+}
+:root[data-theme="dark"] .capa-path {
+  background: linear-gradient(180deg, #1c2541 0%, #192138 100%) !important;
+  border-color: rgba(51, 65, 85, 0.7) !important;
+}
+:root[data-theme="dark"] .capa-path:hover {
+  border-color: rgba(96, 165, 250, 0.45) !important;
+}
+:root[data-theme="dark"] .reader-big-btn {
+  background: #1c2541 !important;
+  border-color: rgba(51, 65, 85, 0.7) !important;
+  color: #f1f5f9 !important;
+}
+:root[data-theme="dark"] .reader-big-btn:hover,
+:root[data-theme="dark"] .reader-big-btn.open {
+  background: #1e293b !important;
+  color: #60a5fa !important;
+  border-color: rgba(96, 165, 250, 0.45) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) body {
+    background: linear-gradient(180deg, #0b132b 0%, #0a0f22 100%) !important;
+    background-attachment: fixed !important;
+  }
+  :root:not([data-theme]) .capa-launch-btn {
+    background: linear-gradient(180deg, #1c2541 0%, #192138 100%) !important;
+    border-color: rgba(51, 65, 85, 0.7) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+  }
+  :root:not([data-theme]) .capa-launch-btn:hover {
+    border-color: rgba(96, 165, 250, 0.45) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+  }
+  :root:not([data-theme]) .capa-launch-btn b {
+    color: #f1f5f9 !important;
+  }
+  :root:not([data-theme]) .capa-launch-btn span {
+    color: #94a3b8 !important;
+  }
+  :root:not([data-theme]) .capa-launch-ico {
+    background: linear-gradient(135deg, #1e293b 0%, #233252 100%) !important;
+  }
+  :root:not([data-theme]) .capa-path {
+    background: linear-gradient(180deg, #1c2541 0%, #192138 100%) !important;
+    border-color: rgba(51, 65, 85, 0.7) !important;
+  }
+  :root:not([data-theme]) .capa-path:hover {
+    border-color: rgba(96, 165, 250, 0.45) !important;
+  }
+  :root:not([data-theme]) .reader-big-btn {
+    background: #1c2541 !important;
+    border-color: rgba(51, 65, 85, 0.7) !important;
+    color: #f1f5f9 !important;
+  }
+  :root:not([data-theme]) .reader-big-btn:hover,
+  :root:not([data-theme]) .reader-big-btn.open {
+    background: #1e293b !important;
+    color: #60a5fa !important;
+    border-color: rgba(96, 165, 250, 0.45) !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOKA TOPNAV MENU STANDARDIZATION — FAMÍLIA DE BOTÕES 100% UNIFICADA (OBRA)
+   Atende rigorosamente à ordem do Miguel: "todos os botões do menu com o mesmo
+   tamanho padronizados. O menu está muito caótico. Me entrega isso."
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* TopNav Container */
+.topnav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-inline: calc(50% - 50vw);
+  box-sizing: border-box;
+  padding: 10px 20px 8px;
+}
+
+/* Lado Esquerdo (Logo + Switcher) */
+.igot-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.igot-topbar-left .brand {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 22px;
+  text-decoration: none;
+  color: var(--text);
+}
+
+/* Switcher de 5 Módulos */
+.section-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Botões do Switcher */
+.section-switch-btn {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: var(--btn-radius-md, 12px) !important;
+  border: 1px solid var(--border-soft) !important;
+  background: var(--surface) !important;
+  font-size: 22px !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  opacity: 0.85;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+  transition: all 0.15s ease;
+}
+
+.section-switch-btn:hover {
+  opacity: 1;
+  background: var(--accent-soft) !important;
+  border-color: var(--accent) !important;
+}
+
+.section-switch-btn.active {
+  opacity: 1;
+  background: var(--accent-soft) !important;
+  border-color: var(--accent) !important;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Correções óticas por font-size para manter a caixa de 48px x 48px (ou 44px x 44px) 100% idêntica */
+.section-switch-btn[href*="estante"] { font-size: 24px !important; }
+.section-switch-btn[href*="video"] { font-size: 22px !important; }
+.section-switch-btn[href*="memoria"] { font-size: 21px !important; }
+.section-switch-btn[href*="harness"] { font-size: 22px !important; }
+.section-switch-btn[href*="writer"] { font-size: 22px !important; }
+
+/* Ações da TopBar (👁, ←, Entrar, 🇧🇷, ⚙, 📊) */
+.igot-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  height: 44px;
+}
+
+/* UNIFICAÇÃO DE TODOS OS BOTÕES DE AÇÃO DO MENU (Mesma altura, mesmo raio, mesmo estilo) */
+.igot-topbar-actions button,
+.igot-topbar-actions .gear,
+.igot-topbar-actions .tele-gear,
+.igot-topbar-actions .back-btn,
+.topnav-eye {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: var(--btn-radius-md, 12px) !important;
+  border: 1px solid var(--border-soft) !important;
+  background: var(--surface) !important;
+  font-size: 20px !important;
+  line-height: 1 !important;
+  color: var(--text) !important;
+  cursor: pointer;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+  transition: all 0.15s ease;
+}
+
+.igot-topbar-actions button:hover,
+.igot-topbar-actions .gear:hover,
+.igot-topbar-actions .tele-gear:hover,
+.igot-topbar-actions .back-btn:hover,
+.topnav-eye:hover {
+  background: var(--accent-soft) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+
+.auth-signin {
+  width: auto !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  min-width: 44px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 16px !important;
+  border-radius: var(--btn-radius-md, 12px) !important;
+  border: 1px solid var(--border-soft) !important;
+  background: var(--surface) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: var(--text) !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+}
+
+.auth-avatar-btn {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: var(--btn-radius-md, 12px) !important;
+  border: 1px solid var(--border-soft) !important;
+  background: var(--surface) !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+}
+
+.lang-switcher-btn {
+  height: 44px !important;
+  min-height: 44px !important;
+  min-width: 44px !important;
+  border-radius: var(--btn-radius-md, 12px) !important;
+  border: 1px solid var(--border-soft) !important;
+  background: var(--surface) !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+}
+
+/* 📱 MOBILE (~375px até 640px) — SIMETRIA DE 2 LINHAS 100% ALINHADIS */
+@media (max-width: 640px) {
+  .topnav {
+    padding: 10px 14px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .igot-topbar-left {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .section-switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .section-switch-btn {
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    font-size: 24px !important;
+    line-height: 1 !important;
+    border-radius: var(--btn-radius-md, 12px) !important;
+  }
+
+  .igot-topbar-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    width: 100%;
+    height: 48px;
+  }
+
+  .igot-topbar-actions button,
+  .igot-topbar-actions .gear,
+  .igot-topbar-actions .tele-gear,
+  .igot-topbar-actions .back-btn,
+  .topnav-eye,
+  .auth-avatar-btn {
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    font-size: 22px !important;
+    line-height: 1 !important;
+    border-radius: var(--btn-radius-md, 12px) !important;
+  }
+
+  .auth-signin,
+  .lang-switcher-btn {
+    height: 48px !important;
+    min-height: 48px !important;
+    min-width: 48px !important;
+    border-radius: var(--btn-radius-md, 12px) !important;
+    font-size: 14px !important;
+  }
+}
+
+
+

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CafezinhoLogo } from "@/components/CafezinhoLogo";
+import { TopNav, TopNavActions } from "@/components/TopNav";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { AuthGate } from "@/components/AuthGate";
 import { BackButton } from "@/components/BackButton";
@@ -61,19 +61,7 @@ export default function Biblioteca() {
 
   return (
     <main className="bib">
-      <div className="igot-topbar bib-topbar">
-        <div className="igot-topbar-left">
-          <a className="brand" href="/" title="Moka — voltar pra capa">
-            <CafezinhoLogo size={26} opacity={0.85} />
-            <span>Moka</span>
-          </a>
-        </div>
-        <div className="igot-topbar-actions">
-          <BackButton />
-          <AuthGate />
-          <LangSwitcher />
-        </div>
-      </div>
+      <TopNav right={<TopNavActions />} />
 
       <div className="bib-body">
         <p className="bib-kicker">{t("bib_kicker")}</p>

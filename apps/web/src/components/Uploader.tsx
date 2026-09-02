@@ -10,6 +10,8 @@ interface UploaderProps {
   configReady?: boolean;
   /** Abre as configurações. */
   onOpenSettings?: () => void;
+  /** Progresso da ingestão (livro grande = barrinha de % subindo). */
+  progress?: { pct: number; label: string } | null;
 }
 
 /**
@@ -17,7 +19,7 @@ interface UploaderProps {
  * Apresenta o app, explica o que faz, avisa se a IA não tá configurada,
  * e aceita .epub/.pdf por arrastar-soltar ou clique.
  */
-export function Uploader({ onFile, error, configReady = true, onOpenSettings }: UploaderProps) {
+export function Uploader({ onFile, error, configReady = true, onOpenSettings, progress }: UploaderProps) {
   const { t } = useI18n();
   const [dragging, setDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -55,6 +57,17 @@ export function Uploader({ onFile, error, configReady = true, onOpenSettings }: 
           <p className="tagline">{t("app_tagline")}</p>
           <p className="subtitle">{t("upload_hero_desc")}</p>
         </div>
+
+        {progress && (
+          <div className="ingest-progress" role="status" aria-live="polite">
+            <div className="ingest-progress-bar">
+              <div className="ingest-progress-fill" style={{ width: `${progress.pct}%` }} />
+            </div>
+            <p className="ingest-progress-label">
+              <span className="ingest-progress-pct">{progress.pct}%</span> — {progress.label}
+            </p>
+          </div>
+        )}
 
         {/* Features */}
         <div className="features">

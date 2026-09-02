@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CafezinhoLogo } from "@/components/CafezinhoLogo";
+import { TopNav, TopNavActions } from "@/components/TopNav";
 import { ZeMocaAvatar } from "@/components/ZeMocaAvatar";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { AuthGate } from "@/components/AuthGate";
@@ -33,6 +33,11 @@ const ICONES_HELP: Array<{ icon: string; nome: { pt: string; en: string }; desc:
   { icon: "📚", nome: { pt: "Estante", en: "Bookshelf" }, desc: { pt: "Sua biblioteca (livros, capas, progresso).", en: "Your library (books, covers, progress)." } },
   { icon: "👁", nome: { pt: "Mostrar/esconder menu", en: "Show/hide menu" }, desc: { pt: "Destrava o menu se sumir (clique traz de volta).", en: "Brings the menu back if it hides (click to recover)." } },
   { icon: "⛶", nome: { pt: "Tela cheia", en: "Fullscreen" }, desc: { pt: "Leitura imersiva, só a página na tela.", en: "Immersive reading, only the page on screen." } },
+  // ── Família MOKA (obra, 30/08): novidades explicadas ──
+  { icon: "🧠", nome: { pt: "Moka Memória", en: "Moka Memory" }, desc: { pt: "Tudo que você leu e viu vira memória organizada e pesquisável: 🎒 bagagem (seu consumo) e ⚡ operacional (contexto da IA). Importe .md, jogue livros da estante, exporte num arquivo portátil.", en: "Everything you read and watch becomes an organized, searchable memory: 🎒 baggage and ⚡ operational. Import .md, add books, export a portable file." } },
+  { icon: "💬", nome: { pt: "Moka Harness — a IA do Moka", en: "Moka Harness — the Moka AI" }, desc: { pt: "Converse com a SUA memória usando a SUA chave de IA. No chat você escolhe usar 🎒 bagagem e/ou ⚡ operacional — cada uma mostra o custo estimado por pergunta.", en: "Chat with YOUR memory using YOUR AI key. Pick 🎒 baggage and/or ⚡ operational — each shows the estimated cost per question." } },
+  { icon: "✍️", nome: { pt: "Moka Writer", en: "Moka Writer" }, desc: { pt: "Seu estúdio de escrever: aba Estúdio (a IA escreve e corrige no SEU estilo salvo; texto grande mostra orçamento antes) e aba Ler. Baixe .md e jogue na memória.", en: "Your writing studio: Studio tab (AI writes and fixes in YOUR style; big texts get an estimate first) and Read tab. Download .md, add to memory." } },
+  { icon: "🧮", nome: { pt: "Orçamento antes de tarefas grandes", en: "Estimate before big tasks" }, desc: { pt: "Traduzir livro inteiro ou corrigir texto longo mostra antes: qual IA, quantos tokens, tempo e custo na SUA moeda. Você confirma — e no fim vê o custo REAL.", en: "Whole-book translation or long fixes show first: which AI, tokens, time and cost in YOUR currency. You confirm — and see the REAL cost at the end." } },
 ];
 
 interface Faq { q: string; a: string; tags: string[] }
@@ -64,6 +69,12 @@ const FAQ_PT: Faq[] = [
     a: "Não. O Moka funciona sem cadastro: abra o site e use na hora, sem entrar com nada. A conta (Google ou e-mail) é opcional e gratuita — com ela, sua biblioteca (livros, anotações, traduções e progresso) fica guardada na nuvem e abre em qualquer aparelho." },
   { q: "Quem faz o Moka?", tags: ["quem", "cafezinho", "empresa", "time"],
     a: "O Moka é feito pelo time de O Cafezinho, com carinho de jornalista e precisão de engenharia. É gratuito — quem quiser apoiar, tem a doação no rodapé (PayPal e Pix)." },
+  { q: "Como funciona o menu de dentro do livro?", tags: ["menu", "leitor", "botões", "grandes", "submenus", "página", "marcar", "perguntar"],
+    a: "Ao abrir um livro você vê 3 BOTÕES GRANDES no alto da página. 📖 Página abre um submenu com: ler a página em voz alta, resumir/explicar e traduzir (a página ou o livro inteiro). 📌 Marcar abre: marcar página, tirar foto da página e suas notas. 🎤 Perguntar abre a caixinha pra perguntar qualquer coisa sobre o livro, por voz ou texto. À direita, o botão ☰ junta ajuda, suas IAs, mural e configurações." },
+  { q: "O que é a Memória na nuvem (Cloudflare R2 / Backblaze B2)?", tags: ["memória", "nuvem", "cloud", "r2", "b2", "backblaze", "cloudflare", "backup", "bucket", "token"],
+    a: "É o backup da sua memória E DA SUA ESTANTE no SEU próprio espaço de nuvem: você cria uma conta grátis no Cloudflare R2 ou Backblaze B2 (os planos gratuitos sobram pra isso), cola a credencial em ⚙️ Configurações → ☁️ Memória na nuvem e aponta Testar conexão. Suas chaves ficam criptografadas só no seu aparelho — o Moka não tem servidor no meio. Na página Memória, ☁️ Salvar na nuvem guarda o texto da memória; na Estante, ☁️ Salvar estante na nuvem guarda cada livro com o ARQUIVO ORIGINAL inteiro (PDF/EPUB de verdade — nunca texto convertido) — e Restaurar estante traz tudo de volta em qualquer aparelho, do jeito que estava." },
+  { q: "Por que um PDF grande demora pra entrar na estante?", tags: ["pdf", "grande", "demora", "lento", "barra", "progresso", "capa", "renderizando"],
+    a: "Livros PDF grandes (dezenenas de MB) levam um ou dois minutos pra subir: o Moka renderiza as primeiras páginas de verdade pra ENCONTRAR A CAPA certa do livro (não vale a primeira página de um scan). Durante tudo isso aparece uma barrinha de percentual contando a etapa — 'Abrindo o livro', 'Verificando as páginas', 'Renderizando pra achar a capa — página 3 de 11', 'Salvando na estante'. É normal, é só esperar a barrinha chegar ao fim." },
 ];
 
 const FAQ_EN: Faq[] = [
@@ -93,6 +104,12 @@ const FAQ_EN: Faq[] = [
     a: "No. Moka works without any account: open the site and use it right away, without signing in. An account (Google or email) is optional and free — with it, your library (books, notes, translations and progress) is saved in the cloud and opens on any device." },
   { q: "Who makes Moka?", tags: ["who", "cafezinho", "company", "team"],
     a: "Moka is made by the O Cafezinho team, with a journalist's care and engineering precision. It's free — if you want to support it, there's a donation button in the footer (PayPal and Pix)." },
+  { q: "How does the in-book menu work?", tags: ["menu", "reader", "buttons", "big", "submenu", "page", "mark", "ask"],
+    a: "When you open a book you see 3 BIG BUTTONS at the top. 📖 Page opens a submenu: read the page aloud, summarize/explain, and translate (the page or the whole book). 📌 Mark opens: bookmark page, take a page photo and your notes. 🎤 Ask opens the box to ask anything about the book, by voice or text. On the right, the ☰ button gathers help, your AIs, the wall and settings." },
+  { q: "What is Cloud memory (Cloudflare R2 / Backblaze B2)?", tags: ["memory", "cloud", "r2", "b2", "backblaze", "cloudflare", "backup", "bucket", "token"],
+    a: "It's the backup of your memory AND your shelf in YOUR own cloud space: create a free account on Cloudflare R2 or Backblaze B2 (free tiers are more than enough), paste the credential in ⚙️ Settings → ☁️ Cloud memory and hit Test connection. Your keys stay encrypted on your device only — Moka has no server in between. On the Memory page, ☁️ Save to cloud stores the memory text; on the Shelf, ☁️ Save shelf to cloud stores every book WITH its ORIGINAL file (the actual PDF/EPUB — never converted text) — and Restore shelf brings it all back on any device, just as it was." },
+  { q: "Why does a big PDF take a while to land on the shelf?", tags: ["pdf", "large", "slow", "progress", "bar", "cover", "rendering"],
+    a: "Large PDFs (tens of MB) take a minute or two to upload: Moka actually renders the first pages to FIND the book's real cover (a scan's first page isn't always it). All along you see a percent bar telling the stage — 'Opening the book', 'Checking the pages', 'Rendering to find the cover — page 3 of 11', 'Saving to your shelf'. It's normal — just let the bar finish." },
 ];
 
 /** Normaliza (minúsculas, sem acento) pra busca e pro robô. */
@@ -141,28 +158,7 @@ export default function Ajuda() {
 
   return (
     <main className="help">
-      <div className="igot-topbar help-topbar">
-        <div className="igot-topbar-left">
-          <a className="brand" href="/">
-            <CafezinhoLogo size={26} opacity={0.85} />
-            <span>Moka</span>
-          </a>
-        </div>
-        <div className="igot-topbar-actions">
-          <button
-            className="gear"
-            onClick={() => router.push("/configuracoes")}
-            aria-label={t("settings")}
-            title={t("settings")}
-          >
-            ⚙️
-          </button>
-          {/* 📊 Suas IAs e telemetria (pedido do Miguel, 22/08). */}
-          <TelemetryIconButton />
-          <AuthGate />
-          <LangSwitcher />
-        </div>
-      </div>
+      <TopNav right={<TopNavActions />} />
 
       <div className="help-body">
         {/* 🤖 ZÉ MOCA — agente-guia em destaque, no topo da ajuda.
