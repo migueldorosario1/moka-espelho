@@ -73,6 +73,10 @@ export function PageActionModal({
   /** Janela minimizada (pilula flutuante) — o livro fica 100% visível
    *  enquanto a IA trabalha ou enquanto a pessoa lê o resultado. */
   const [minimized, setMinimized] = useState(false);
+  /** Janela maximizada (tela quase inteira). Pedido do Miguel (03/09):
+   *  no iPad/tablet o painel nasce como coluna de ~metade da tela e o
+   *  redimensionar é só pointer-fine — sem esse botão não dá pra ampliar. */
+  const [maximized, setMaximized] = useState(false);
   /** Posição quando arrastada (null = encaixe padrão na ESQUERDA —
    *  nunca tapa o zoom, que mora no canto superior DIREITO). Pedido do
    *  Miguel (02/08): a janela tem que ser flexível — arrasta pelo título
@@ -88,7 +92,8 @@ export function PageActionModal({
 
   const onHeaderPointerDown = (e: React.PointerEvent<HTMLElement>) => {
     if (!finePointer) return; // celular: folha inferior fixa
-    if ((e.target as HTMLElement).closest("button")) return; // ➖/✕ não arrastam
+    if (maximized) return; // maximizada: encaixe na tela, não arrasta
+    if ((e.target as HTMLElement).closest("button")) return; // ➖/⛶/✕ não arrastam
     const rect = modalRef.current?.getBoundingClientRect();
     if (!rect) return;
     dragRef.current = { dx: e.clientX - rect.left, dy: e.clientY - rect.top };
@@ -200,10 +205,10 @@ export function PageActionModal({
         </button>
       ) : (
       <div
-        className={`summary-modal${finePointer ? " pa-movable" : ""}${pos ? " pa-dragged" : ""}`}
+        className={`summary-modal${finePointer && !maximized ? " pa-movable" : ""}${pos ? " pa-dragged" : ""}${maximized ? " pa-maximized" : ""}`}
         ref={modalRef}
         style={
-          pos
+          pos && !maximized
             ? { left: pos.x, top: pos.y, right: "auto", bottom: "auto", width: pos.w }
             : undefined
         }
@@ -220,6 +225,15 @@ export function PageActionModal({
         >
           <h2>{t("pa_title")}</h2>
           <div className="pa-header-btns">
+            {/* ⛶/⧉ Maximizar↔restaurar — o único jeito de ampliar no
+                toque (iPad/tablet): arrastar/redimensionar é só pointer-fine. */}
+            <button
+              onClick={() => { setPos(null); setMaximized((m) => !m); }}
+              aria-label={maximized ? t("pa_restore") : t("pa_maximize")}
+              title={maximized ? t("pa_restore") : t("pa_maximize")}
+            >
+              {maximized ? "⧉" : "⛶"}
+            </button>
             <button onClick={() => setMinimized(true)} aria-label="minimizar" title="minimizar — o livro fica inteiro visível">
               ➖
             </button>

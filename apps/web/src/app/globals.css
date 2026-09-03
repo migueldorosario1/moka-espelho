@@ -5000,6 +5000,21 @@ max-height: 58vh;
 border-radius: 14px 14px 0 0;
 }
 }
+/* ⛶ MAXIMIZADA (pedido do Miguel 03/09 — iPad): a janela ocupa a tela
+quase inteira. Vale pros 2 formatos (coluna lateral ≥701px e folha
+inferior ≤700px) e é o único caminho de ampliar no TOQUE — arrastar e
+redimensionar pelo canto continuam exclusivos do pointer-fine.
+Especificidade .summary-modal.pa-maximized vence o media query acima. */
+.summary-modal.pa-maximized {
+top: 12px;
+left: 12px;
+right: 12px;
+bottom: 12px;
+width: auto;
+max-width: none;
+max-height: none;
+border-radius: 14px;
+}
 .pa-pill {
 pointer-events: auto;
 position: fixed;
