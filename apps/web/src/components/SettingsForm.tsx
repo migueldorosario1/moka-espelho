@@ -540,41 +540,51 @@ const TTS_TEST_PHRASES: Record<string, string> = {
                       )}
                     </div>
                   </div>
+                  {/* Linha de ações GRANDES embaixo do card (pedido do
+                      Miguel 03/09: os iconezinhos ao lado eram pequenos
+                      demais — "mal dá pra ver, ainda mais no celular, no
+                      iPad"). Botões de verdade, com texto. */}
                   <div className="saved-provider-actions">
                     {!e.active && (
                       <button
                         type="button"
-                        className="mini-btn use-btn"
+                        className="sp-action use-btn"
                         onClick={() => handleActivate(e.id)}
                         title={t("use")}
                       >
-                        {t("use")}
+                        ⚡ {t("use")}
                       </button>
                     )}
                     <button
                       type="button"
-                      className={`mini-btn test-btn ${entryTest[e.id] ? `test-${entryTest[e.id]}` : ""}`}
+                      className={`sp-action test-btn ${entryTest[e.id] ? `test-${entryTest[e.id]}` : ""}`}
                       onClick={() => handleTestEntry(e.id)}
                       title={t("set_test_connection")}
                       disabled={entryTest[e.id] === "testing"}
                     >
-                      {entryTest[e.id] === "testing" ? "⏳" : entryTest[e.id] === "ok" ? "✅" : entryTest[e.id] === "fail" ? "❌" : "🔌"}
+                      {entryTest[e.id] === "testing"
+                        ? `⏳ ${t("set_testing")}`
+                        : entryTest[e.id] === "ok"
+                          ? `✅ ${t("set_test_ok")}`
+                          : entryTest[e.id] === "fail"
+                            ? `❌ ${t("set_test_fail")}`
+                            : `🔌 ${t("set_test_connection")}`}
                     </button>
                     <button
                       type="button"
-                      className="mini-btn edit-btn"
+                      className="sp-action edit-btn"
                       onClick={() => handleEdit(e.id)}
                       title={t("edit")}
                     >
-                      ✏️
+                      ✏️ {t("edit")}
                     </button>
                     <button
                       type="button"
-                      className="mini-btn remove-btn"
+                      className="sp-action remove-btn"
                       onClick={() => handleRemoveEntry(e.id)}
                       title={t("remove")}
                     >
-                      🗑
+                      🗑 {t("remove")}
                     </button>
                   </div>
 

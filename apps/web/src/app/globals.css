@@ -3393,6 +3393,62 @@ main.igot-shell.ft {
           color: #a04020;
         }
 
+        /* Linha de ações GRANDES do card de LLM (pedido do Miguel 03/09):
+           Testar/Editar/Apagar eram iconezinhos de 12px ao lado do nome —
+           agora são botões de verdade numa linha INTEIRA abaixo do card,
+           no padrão Button Family (piso 44px desktop / 48px mobile, raio 12). */
+        .saved-provider-actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          flex: 1 1 100%;
+          width: 100%;
+          margin-top: 8px;
+        }
+        .sp-action {
+          flex: 1 1 130px;
+          min-height: 44px;
+          padding: 8px 12px;
+          border: 1px solid var(--border);
+          background: var(--surface);
+          color: var(--text);
+          border-radius: 12px;
+          font-size: 15px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: var(--transition);
+        }
+        .sp-action:hover {
+          border-color: var(--accent);
+        }
+        .sp-action:disabled {
+          opacity: 0.7;
+          cursor: wait;
+        }
+        .sp-action.use-btn {
+          background: var(--accent);
+          color: white;
+          border-color: var(--accent);
+        }
+        .sp-action.test-btn.test-ok {
+          border-color: #2e9e5b;
+          color: #2e9e5b;
+        }
+        .sp-action.test-btn.test-fail {
+          border-color: #b3402a;
+          color: #b3402a;
+        }
+        @media (max-width: 700px) {
+          .sp-action {
+            /* No celular cada botão ocupa a LINHA INTEIRA — alvo de toque
+               grandão e texto numa linha só (pedido: "no celular é muito
+               pequenininho, tem que botar o botão grande"). */
+            flex: 1 1 100%;
+            min-height: 48px;
+            font-size: 16px;
+          }
+        }
+
         /* Separador de seção */
         /* Seção de 3 idiomas */
         .lang-section {
