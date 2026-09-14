@@ -4475,8 +4475,12 @@ position: absolute;
 top: calc(100% + 6px);
 right: 0;
 min-width: 180px;
-max-height: 320px;
+/* 12 idiomas ≈ 440px de lista (bug do Miguel 14/09: 320px picava a
+   bandeirinha dos últimos — árabe/híndi — no meio). Comporta inteira em
+   telas normais; em telas baixas rola sem cortar item no meio. */
+max-height: min(70vh, 460px);
 overflow-y: auto;
+overscroll-behavior: contain;
 background: var(--surface);
 border: 1px solid var(--border);
 border-radius: 12px;
@@ -4500,6 +4504,27 @@ font-size: 14px;
 cursor: pointer;
 text-align: left;
 transition: background 100ms ease;
+}
+/* GUERRA DE ESPECIFICIDADE 2 (bug do Miguel, 14/09): a regra de grupo
+   ".igot-topbar-actions button" (44x44 + fonte 20px + center, tudo
+   !important) esmagava as opções do dropdown de idiomas — nome cortado
+   nas primeiras letras e lista picada no fundo. Mesma família do bug do
+   botão "Entrar" (06/09). Seletor triplo (0,3,0) vence o grupo (0,1,1)
+   em qualquer ordem; o par simples cobre capa/Reader. */
+.igot-topbar-actions .lang-switcher .lang-option,
+.lang-switcher .lang-option {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+  font-size: 14px !important;
+  line-height: 1.25 !important;
+  padding: 8px 12px !important;
+  border: none !important;
+  background: transparent !important;
+  box-sizing: border-box !important;
 }
 .lang-option:hover {
 background: var(--accent-soft);
