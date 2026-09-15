@@ -9062,8 +9062,11 @@ font-size: 14px;
   flex-wrap: wrap;
   /* Full-bleed (reforma 31/08): o menu vaza do container de cada página
      (estante não tinha margem; memória 1080px, writer 880px...) e ganha
-     a MESMA margem interna em todas — logo nunca mais colado no canto. */
-  margin-inline: calc(50% - 50vw);
+     a MESMA margem interna em todas — logo nunca mais colado no canto.
+     O vw se divide pela escala de fonte porque body { zoom } (a11y) não
+     reescala unidades de viewport: sem isso, fonte >100% estourava a barra
+     pelos dois lados e levava o olhinho pra fora da tela (bug 14/09). */
+  margin-inline: calc(50% - 50vw / var(--ui-font-scale, 1));
   box-sizing: border-box;
   padding: 8px 20px 6px;
 }
@@ -9748,9 +9751,17 @@ body {
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
-  margin-inline: calc(50% - 50vw);
+  margin-inline: calc(50% - 50vw / var(--ui-font-scale, 1));
   box-sizing: border-box;
   padding: 10px 20px 8px;
+}
+
+/* Modo oculto: olhinho sozinho fica no canto DIREITO, perto de onde
+   estava no menu aberto. Esta regra precisa vir DEPOIS da .topnav acima:
+   em cascata de mesma especificidade o space-between venceria e jogaria
+   o olho pra esquerda (era o comportamento em produção antes de 15/09). */
+.topnav-hidden {
+  justify-content: flex-end;
 }
 
 /* Lado Esquerdo (Logo + Switcher) */
