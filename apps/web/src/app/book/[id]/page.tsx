@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Reader } from "@/components/Reader";
+import { TopNav } from "@/components/TopNav";
 import { useI18n } from "@/components/I18nProvider";
 import { AIPanel } from "@/components/AIPanel";
 import { hasConfig, loadConfigCache } from "@/lib/config";
@@ -119,6 +120,7 @@ export default function BookPage({ params }: { params: { id: string } }) {
   if (loadStuck) {
     return (
       <main className="igot-shell">
+        <TopNav active="reader" />
         <div className="igot-loading">
           <p>
             ⏱️ Este livro demorou demais pra abrir e eu parei pra você não
@@ -140,6 +142,7 @@ export default function BookPage({ params }: { params: { id: string } }) {
   if (loading) {
     return (
       <main className="igot-shell">
+        <TopNav active="reader" />
         <div className="igot-loading">
           <div className="spinner" />
           <p>{t("err_opening_book")}</p>
@@ -162,6 +165,7 @@ export default function BookPage({ params }: { params: { id: string } }) {
   if (notFound || !session) {
     return (
       <main className="igot-shell">
+        <TopNav active="reader" />
         <div className="igot-loading">
           <p>{t("err_book_not_found")}</p>
           <button onClick={() => router.push("/estante")} className="back-btn">
@@ -174,7 +178,11 @@ export default function BookPage({ params }: { params: { id: string } }) {
 
   return (
     <main className="igot-shell">
-      <div className={`igot-workspace igot-workspace-no-topbar ${action ? "has-panel" : ""}`}>
+      {/* Ordem do Miguel 15/09: menu no alto em TODA parte — a prateleira do
+          livro era "workspace-no-topbar"; agora recebe o TopNav padrão
+          (🏠 home + bandeirinha de idiomas + ⚙️ configurações). */}
+      <TopNav active="reader" />
+      <div className={`igot-workspace ${action ? "has-panel" : ""}`}>
         <Reader
           book={session.book}
           pdfSource={pdfSource}

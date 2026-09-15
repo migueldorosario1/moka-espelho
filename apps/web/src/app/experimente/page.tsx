@@ -6,6 +6,7 @@ import { LangSwitcher } from "@/components/LangSwitcher";
 import { AuthGate } from "@/components/AuthGate";
 import { SiteFooter } from "@/components/SiteFooter";
 import { useI18n } from "@/components/I18nProvider";
+import { TopNav, TopNavActions } from "@/components/TopNav";
 
 /**
  * /experimente — FASE GRATUITA (pivô do Miguel, 2026-08-04).
@@ -19,18 +20,8 @@ export default function Experimente() {
 
   return (
     <main className="igot-shell ft">
-      <div className="igot-topbar">
-        <div className="igot-topbar-left">
-          <Link href="/" className="brand" title="MOKA — Ir para página central">
-            <CafezinhoLogo size={26} opacity={0.85} />
-            <span>MOKA</span>
-          </Link>
-        </div>
-        <div className="igot-topbar-actions">
-          <AuthGate />
-          <LangSwitcher />
-        </div>
-      </div>
+      {/* TopNav padrão (ordem do Miguel 15/09: menu no alto em TODAS as páginas). */}
+      <TopNav right={<TopNavActions />} />
 
       <div className="capa-body">
         <h1 className="capa-tagline" style={{ fontSize: 28 }}>🆓 {t("free_title")}</h1>
