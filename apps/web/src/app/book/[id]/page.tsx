@@ -120,6 +120,7 @@ export default function BookPage({ params }: { params: { id: string } }) {
   if (loadStuck) {
     return (
       <main className="igot-shell">
+        <TopNav active="reader" />
         <div className="igot-loading">
           <p>
             ⏱️ Este livro demorou demais pra abrir e eu parei pra você não
@@ -141,6 +142,7 @@ export default function BookPage({ params }: { params: { id: string } }) {
   if (loading) {
     return (
       <main className="igot-shell">
+        <TopNav active="reader" />
         <div className="igot-loading">
           <div className="spinner" />
           <p>{t("err_opening_book")}</p>
@@ -163,6 +165,7 @@ export default function BookPage({ params }: { params: { id: string } }) {
   if (notFound || !session) {
     return (
       <main className="igot-shell">
+        <TopNav active="reader" />
         <div className="igot-loading">
           <p>{t("err_book_not_found")}</p>
           <button onClick={() => router.push("/estante")} className="back-btn">
