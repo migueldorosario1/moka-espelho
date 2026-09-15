@@ -24,7 +24,7 @@ import { BackButton } from "./BackButton";
 import { AuthGate } from "./AuthGate";
 import { TelemetryIconButton } from "./TelemetryIconButton";
 
-const HIDDEN_KEY = "moka.navHidden";
+const HIDDEN_KEY = "moka.navHidden2";
 
 /**
  * TopNavActions — o CONJUNTO PADRÃO de ações da barra (ordem do Miguel,
@@ -45,6 +45,14 @@ export function TopNavActions({
   const { t } = useI18n();
   return (
     <>
+      <Link
+        href="/"
+        className="gear"
+        aria-label="Início — voltar para a página central"
+        title="Início — voltar para a página central"
+      >
+        🏠
+      </Link>
       {back && <BackButton />}
       <AuthGate />
       <LangSwitcher />
@@ -75,12 +83,16 @@ export function TopNav({
   // Reforma 31/08 (ordem do Miguel): menu CLEAN por padrão — nasce ESCONDIDO;
   // o olhinho 👁 agora ABRE o menu (era o contrário). Quem já escolheu
   // mostrar/esconder antes, mantém a própria preferência salva no aparelho.
-  const [hidden, setHidden] = useState(true);
+  // ➕ 15/09 (nova ordem do Miguel: "tem que continuar aparecendo no alto,
+  // em TODOS"): o padrão VOLTOU a ser VISÍVEL — e a chave de preferência
+  // mudou (navHidden2) para zerar o "escondido" gravado nos aparelhos pela
+  // era do CLEAN. Quem quiser leitura limpa, aperta o olhinho (persiste).
+  const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem(HIDDEN_KEY);
-      setHidden(saved === null ? true : saved === "1");
+      setHidden(saved === "1");
     } catch { /* sem storage */ }
   }, []);
 
@@ -130,6 +142,14 @@ export function TopNav({
         </button>
         {right ?? (
           <>
+            <Link
+              href="/"
+              className="gear"
+              aria-label="Início — voltar para a página central"
+              title="Início — voltar para a página central"
+            >
+              🏠
+            </Link>
             <LangSwitcher />
             <button
               className="gear"

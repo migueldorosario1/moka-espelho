@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Reader } from "@/components/Reader";
+import { TopNav } from "@/components/TopNav";
 import { useI18n } from "@/components/I18nProvider";
 import { AIPanel } from "@/components/AIPanel";
 import { hasConfig, loadConfigCache } from "@/lib/config";
@@ -174,7 +175,11 @@ export default function BookPage({ params }: { params: { id: string } }) {
 
   return (
     <main className="igot-shell">
-      <div className={`igot-workspace igot-workspace-no-topbar ${action ? "has-panel" : ""}`}>
+      {/* Ordem do Miguel 15/09: menu no alto em TODA parte — a prateleira do
+          livro era "workspace-no-topbar"; agora recebe o TopNav padrão
+          (🏠 home + bandeirinha de idiomas + ⚙️ configurações). */}
+      <TopNav active="reader" />
+      <div className={`igot-workspace ${action ? "has-panel" : ""}`}>
         <Reader
           book={session.book}
           pdfSource={pdfSource}

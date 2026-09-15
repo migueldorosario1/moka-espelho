@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { AuthGate } from "@/components/AuthGate";
 import { SiteFooter } from "@/components/SiteFooter";
+import { TopNav, TopNavActions } from "@/components/TopNav";
 
 export const metadata: Metadata = {
   title: "Quem Somos — Moka",
@@ -18,13 +19,9 @@ export const metadata: Metadata = {
 export default function SobrePage() {
   return (
     <main className="info-page">
-      <div className="info-topbar">
-        <a href="/" className="info-back">← Moka</a>
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <AuthGate />
-          <LangSwitcher />
-        </div>
-      </div>
+      {/* TopNav padrão (ordem do Miguel 15/09: menu no alto em TODAS as páginas
+          — o "← Moka" antigo virou o 🏠 padrão). */}
+      <TopNav right={<TopNavActions />} />
       <article className="info-card">
 
         <h1>Quem Somos</h1>

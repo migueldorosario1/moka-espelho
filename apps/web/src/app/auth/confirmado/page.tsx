@@ -6,6 +6,7 @@ import { CafezinhoLogo } from "@/components/CafezinhoLogo";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { SiteFooter } from "@/components/SiteFooter";
 import { useI18n } from "@/components/I18nProvider";
+import { TopNav } from "@/components/TopNav";
 
 /**
  * /auth/confirmado — destino do link de CONFIRMAÇÃO DE CADASTRO.
@@ -28,17 +29,8 @@ export default function Confirmado() {
 
   return (
     <main className="igot-shell ft">
-      <div className="igot-topbar">
-        <div className="igot-topbar-left">
-          <Link href="/" className="brand" title="MOKA — Ir para página central">
-            <CafezinhoLogo size={26} opacity={0.85} />
-            <span>MOKA</span>
-          </Link>
-        </div>
-        <div className="igot-topbar-actions">
-          <LangSwitcher />
-        </div>
-      </div>
+      {/* TopNav padrão (ordem do Miguel 15/09: menu no alto em TODAS as páginas). */}
+      <TopNav />
 
       <div className="capa-body" style={{ maxWidth: 440, margin: "0 auto", textAlign: "center" }}>
         {erro ? (

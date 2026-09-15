@@ -7,6 +7,7 @@ import { AuthGate } from "@/components/AuthGate";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ZeMocaAvatar } from "@/components/ZeMocaAvatar";
 import { useI18n } from "@/components/I18nProvider";
+import { TopNav, TopNavActions } from "@/components/TopNav";
 
 /** Links diretos pra pegar a chave (neutros de idioma). */
 const PROVIDERS: { nome: string; url: string; nota: string }[] = [
@@ -39,18 +40,8 @@ export default function Tutorial() {
 
   return (
     <main className="help">
-      <div className="igot-topbar help-topbar">
-        <div className="igot-topbar-left">
-          <Link href="/" className="brand" title="MOKA — Ir para página central">
-            <CafezinhoLogo size={26} opacity={0.85} />
-            <span>MOKA</span>
-          </Link>
-        </div>
-        <div className="igot-topbar-actions">
-          <AuthGate />
-          <LangSwitcher />
-        </div>
-      </div>
+      {/* TopNav padrão (ordem do Miguel 15/09: menu no alto em TODAS as páginas). */}
+      <TopNav right={<TopNavActions />} />
 
       <div className="help-body">
         {/* 🤖 Zé Moca no topo — o roceiro que te ensina (pedido do Miguel). */}
